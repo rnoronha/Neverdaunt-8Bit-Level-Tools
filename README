@@ -1,4 +1,6 @@
-A not-so-quick walkthrough of how this is structured; note that there will almost certainly be architectural changes, because I'm still not happy with some things. Keep in mind that this is a C# project, so you'll need either Visual Studio 2010 or Mono to actually do anything with it. I don't know if Mono will work, I use the VS 2010 Express dealiebopper; I do import a Quaternion and Vector3D class from some Microsoft library or another, so Mono might have issues.
+This is a fan-made library for manipulating level saves from Neverdaunt 8-Bit. It is not officially endorsed or supported in any way; no guarantee is made that any of the functions do what they claim to do.
+
+A not-so-quick walkthrough of how this library is structured; note that there will almost certainly be architectural changes, because I'm still not happy with some things. Keep in mind that this is a C# project, so you'll need either Visual Studio 2010 or Mono to actually do anything with it. I don't know if Mono will work, I use the VS 2010 Express dealiebopper; I do import a Quaternion and Vector3D class from some Microsoft library or another, so Mono might have issues.
 
 The primary object you use in this project is the N8 Level. It provides methods for parsing Neverdaunt cell saves and turning their contents into assorted objects, as well as taking those various objects and turning them back into a Neverdaunt cell save.
 
