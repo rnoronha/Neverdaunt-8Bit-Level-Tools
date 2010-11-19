@@ -11,10 +11,10 @@ namespace N8Parser
     {
         static void Main(string[] args)
         {
-            MaxProtectTest.GenerateProxyBubble();
+            //MaxProtectTest.GenerateProxyBubble();
             //MaxProtectTest.GenerateLevel();
             //Flies.GenerateLevel();
-            //Eyestrain.GenerateLevel();
+            Eyestrain.GenerateLevel();
             //SCIENCE.GenerateLevel();
             //RotateSave.GenerateLevel(@"C:\Program Files (x86)\N8\Saves\arrow+y.ncd");
 

@@ -16,6 +16,7 @@ namespace N8Parser
             string SavePath = @"C:\Program Files (x86)\N8\Saves\proxybubble.ncd";
 
             N8Level Level = new N8Level();
+            Quaternion UpsideDown = new Quaternion(new Vector3D(1, 0, 0), 180);
 
             N8BlockFactory LevelBlocks = Level.blocks;
             List<N8Tronic> ProxyBlocks = new List<N8Tronic>();
@@ -23,12 +24,14 @@ namespace N8Parser
             
             List<Tuple<Vector3D, Quaternion>> points = new List<Tuple<Vector3D,Quaternion>>();
             points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, -1), 45, 45));
-            /*
+            //*
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 70, 150, (double)10 / 16 * Math.PI));
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 90, 250, (double)8 / 16 * Math.PI));
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 145, 350, (double)9 / 16 * Math.PI));
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 150, 450, (double)9 / 16 * Math.PI));
-            */
+            points.AddRange(Utilities.EvenCircle(new Vector3D(0,0,50), 90, 550));
+            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 145, 600));
+            //*/
 
             Quaternion InitialRotation = new Quaternion(new Vector3D(0, 0, 1), -90) * new Quaternion(new Vector3D(0,1,0), 90);
 
@@ -48,49 +51,113 @@ namespace N8Parser
                 Console.WriteLine("Warning, " + proxies.Count + " proxies!");
                 Console.ReadLine();
             }
-
-            DataBlock Channel = LevelBlocks.DataNode("Channel", "1025");
-            DataBlock UsernameRec = LevelBlocks.DataNode("Recieved Username");
-            DataBlock MessageRec = LevelBlocks.DataNode("Recieved Message");
-
-            DataBlock UsernameStore = LevelBlocks.DataNode("Stored Username", "Tacroy");
-            DataBlock Password = LevelBlocks.DataNode("Password");
-
             Keyboard kb = LevelBlocks.Keyboard("Set Cell Password");
             kb.position = new Vector3D(30, -30, 5);
+            
+            TronicSequence Reciever = new TronicSequence(kb);
+            DataBlock Channel = Reciever.NewDataBlock("Channel", "1025");
+            DataBlock UsernameRec = Reciever.NewDataBlock("Recieved Username");
+            DataBlock MessageRec = Reciever.NewDataBlock("Recieved Message");
+
+            DataBlock UsernameStore = Reciever.NewDataBlock("Stored Username", "Tacroy");
+            DataBlock AlternateUsernameStore = Reciever.NewDataBlock("Alternate Username", "Mockingbird");
+            DataBlock Password = Reciever.NewDataBlock("Password");
+
+
             kb.DataOutA(Password.Out);
 
-
-            TronicSequence Reciever = new TronicSequence(kb);
+            
             Reciever.RadioReciever(Channel.In, UsernameRec.Out, MessageRec.Out);
-            TronicSequence FlipFlop = TronicsTesting.Ringbuffer(new List<string>(new string[] {"1", "0"}));
+
+            TronicSequence PasswordTest = new TronicSequence();
+
+            PasswordTest.IfEqual(Password.In, MessageRec.In);
+
+            TronicSequence NameTest = new TronicSequence();
+
+            NameTest.IfEqual(UsernameRec.In, UsernameStore.In, "Comparator",
+                             new TronicSequence().IfEqual(UsernameRec.In, AlternateUsernameStore.In).FlowOutTo(PasswordTest));
+                     
+            
+
+            TronicSequence FlipFlop = TronicsTesting.Ringbuffer(new List<string>(new string[] {"0", "1"}));
             DataBlock ControlBit = FlipFlop.data[FlipFlop.data.Count - 1];
-            DataBlock ReturnPos = Reciever.NewDataBlock("Return Position", "v0,0,0");
+            DataBlock ReturnPos = Reciever.NewDataBlock("Return Position", "v0,100,0");
             
             
-            Reciever.Append(FlipFlop)
-                    .Mover(ReturnPos.In, null, "Return Mover")
-                    .RadioTransmit(Channel.In, ControlBit.In);
+            Reciever.Append(NameTest)
+                    .Append(PasswordTest)
+                    .Append(FlipFlop)
+                    .Mover(ReturnPos.In, ReturnPos.Out, "Return Mover")
+                    .RadioTransmit(Channel.In, ControlBit.In, "Yeller");
 
             TronicSequence RandomVector = TronicsTesting.RandomXYVectorGenerator();
             DataBlock RandVect = RandomVector.data[RandomVector.data.Count - 1];
 
             foreach (FlowTronic prox in proxies)
             {
-                //RandomVector.GetFirst().FlowInFrom(prox);
+                RandomVector.GetFirst().FlowInFrom(prox);
             }
 
+
+
+            N8Block TronicAttach = LevelBlocks.GenerateBlock("letter.period", "");
+            TronicAttach.position.X = 100;
+
+
+            TronicSequence ProxyRotor = new TronicSequence();
+            DataBlock Quantity = ProxyRotor.NewDataBlock("Amount", "q0.008,0,-0.999,0");
+            DataBlock Current = ProxyRotor.NewDataBlock("Current", "q1,0,0,0");
+
+            ProxyRotor.Multiply(Quantity.In, Current.In, Current.Out, "Unit step")
+                      .Rotor(Current.In, null, "Rotate1");
+
+
             TronicSequence MovementLogic = new TronicSequence();
-            MovementLogic.Append(RandomVector)
+            MovementLogic.Append(RandomVector);
+
+            MovementLogic.Append(ProxyRotor)
                          .IfGreater(ControlBit.In, null, "Control")
                          .Mover(RandVect.In, null, "Flee Mover");
 
-            N8Block Tronic_Attach = LevelBlocks.GenerateBlock("snowmancoal", "");
+            MovementLogic.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
+            Reciever.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
+            foreach (N8Tronic t in Reciever.tronics.TronicsByID.Values)
+            {
+                TronicAttach.AttachToMeAbsolute(t);
+            }
 
-            MovementLogic.LayoutLinear(new Vector3D(0,-100,0));            
-            Reciever.LayoutLinear(new Vector3D(100, 100, 100));
+            MovementLogic.AttachAllNonPositional(TronicAttach, true);
+
+            foreach (N8Tronic t in proxies)
+            {
+                TronicAttach.AttachToMe(t);
+            }
+
+            foreach (N8Tronic t in LevelBlocks.TronicsByID.Values)
+            {
+                if (!(t.type == "rkeyboard"))
+                {
+                    t.rotation = UpsideDown;
+                    TronicAttach.AttachToMe(t);
+                }
+
+            }
+
             LevelBlocks.CopyFromDestructive(MovementLogic.tronics);
             LevelBlocks.CopyFromDestructive(Reciever.tronics);
+
+            N8Tronic RetMover = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Return Mover" select t).First();
+            N8Tronic FleeMover = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Flee Mover" select t).First();
+            N8Tronic Rotor = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Rotate1" select t).First();
+
+            RetMover.position.Z = -1000;
+            FleeMover.position.Z = 100;
+            RetMover.Detach();
+            FleeMover.Detach();
+
+            TronicAttach.AttachToMe(Rotor);
+
             Utilities.Save(SavePath, Level);
 
         }

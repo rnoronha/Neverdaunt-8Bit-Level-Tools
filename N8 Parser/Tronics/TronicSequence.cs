@@ -12,6 +12,8 @@ namespace N8Parser
         public N8BlockFactory tronics;
         private FlowTronic CurrentTronic;
         private Node CurrentOut;
+        private FlowTronic LastBranch;
+        private Node LastBranchNode;
         private List<FlowTronic> sequence;
         public List<DataBlock> data;
 
@@ -45,6 +47,12 @@ namespace N8Parser
         public void FlowInFrom(FlowTronic n, NodeType Out = NodeType.FlowOutA)
         {
             this.GetFirst().FlowInFrom(n, Out);
+        }
+
+        public TronicSequence FlowOutTo(TronicSequence other, NodeType Out = NodeType.FlowOutA)
+        {
+            other.GetFirst().FlowInFrom(this.CurrentTronic, this.CurrentOut);
+            return this;
         }
 
         public TronicSequence Append(TronicSequence other)
@@ -155,7 +163,7 @@ namespace N8Parser
         public TronicSequence IfEqual(DataNodeIn DataInA, DataNodeIn DataInB, string name = "IfEquals", TronicSequence Else = null)
         {
             CheckCanAppend();
-
+            
             FlowTronic NextTronic = tronics.IfEqual(name);
             
             NextTronic.DataInA(DataInA);
@@ -168,8 +176,15 @@ namespace N8Parser
             }
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutA));
+            NoteBranch(NodeType.FlowOutB);
 
             return this;
+        }
+
+        private void NoteBranch(NodeType node)
+        {
+            LastBranch = CurrentTronic;
+            LastBranchNode = CurrentTronic.GetNode(node);
         }
 
         public TronicSequence IfNotEqual(DataNodeIn DataInA, DataNodeIn DataInB, string name = "IfNotEquals", TronicSequence Else = null)
@@ -188,7 +203,7 @@ namespace N8Parser
             }
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutB));
-
+            NoteBranch(NodeType.FlowOutA);
 
             return this;
         }
@@ -208,7 +223,7 @@ namespace N8Parser
                 this.tronics.CopyFromDestructive(Else.tronics);
             }
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutA));
-
+            NoteBranch(NodeType.FlowOutB);
             return this;
         }
 
@@ -234,7 +249,7 @@ namespace N8Parser
             }
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutB));
-
+            NoteBranch(NodeType.FlowOutA);
             return this;
         }
 
@@ -307,7 +322,7 @@ namespace N8Parser
 
         public DataBlock NewDataBlock(string name = "data", string data = "")
         {
-            DataBlock ret = tronics.DataNode(name);
+            DataBlock ret = tronics.DataBlock(name);
             this.data.Add(ret);
             ret.data = data;
             return ret;
@@ -464,6 +479,50 @@ namespace N8Parser
             }
         }
 
+        public void AttachAllTo(N8Block which, bool absolute)
+        {
+            foreach (N8Tronic t in tronics.TronicsByID.Values)
+            {
+                if (absolute)
+                {
+                    which.AttachToMeAbsolute(t);
+                }
+                else
+                {
+                    which.AttachToMe(t);
+                }
+            }
+        }
+
+        public void AttachAllNonPositional(N8Block which, bool absolute)
+        {
+            foreach (FlowTronic t in sequence)
+            {
+                if (!t.IsPositionDependent())
+                {
+                    if (absolute)
+                    {
+                        which.AttachToMeAbsolute(t);
+                    }
+                    else
+                    {
+                        which.AttachToMe(t);
+                    }
+                }
+            }
+            foreach (DataBlock db in data)
+            {
+                if (absolute)
+                {
+                    which.AttachToMeAbsolute(db);
+                }
+                else
+                {
+                    which.AttachToMe(db);
+                }
+            }
+        }
+
         public void LayoutDense(Vector3D Where)
         {
             LayoutDense(Where, new Quaternion(0, 0, 0, 1));
@@ -472,6 +531,31 @@ namespace N8Parser
         public void LayoutDense()
         {
             LayoutDense(new Vector3D(0,0,0), new Quaternion(0, 0, 0, 1));
+        }
+
+        public void LayoutRandGrid(Vector3D origin, Quaternion rotation, int XSize, int YSize)
+        {
+            Random rand = new Random();
+
+            int xmin = -XSize / 2;
+            int xmax = XSize / 2;
+            int ymin = -YSize / 2;
+            int ymax = YSize / 2;
+
+            foreach (N8Tronic t in tronics.TronicsByID.Values)
+            {
+                int yOffset = rand.Next(ymin, ymax);
+                int xOffset = rand.Next(xmin, xmax);
+                t.position.X = origin.X + xOffset;
+                t.position.Y = origin.Y + yOffset;
+                t.position.Z = origin.Z;
+                t.rotation = rotation;
+            }
+        }
+
+        internal void Else(TronicSequence ElseBranch)
+        {
+            ElseBranch.GetFirst().FlowInFrom(LastBranch, LastBranchNode);
         }
     }
 }

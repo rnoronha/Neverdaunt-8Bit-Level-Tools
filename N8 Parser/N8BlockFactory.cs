@@ -384,7 +384,7 @@ namespace N8Parser
 
         }
 
-        public DataBlock DataNode(string name = "DataNode", string data = "")
+        public DataBlock DataBlock(string name = "DataNode", string data = "")
         {
             int NewID = GetNewID();
             DataBlock temp = new DataBlock(NewID, name);

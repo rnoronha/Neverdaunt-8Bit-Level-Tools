@@ -52,17 +52,18 @@ namespace N8Parser.Level_Modifiers
             */
 
             Console.ReadLine();
-            var locations = Utilities.EvenSphere(new Vector3D(0, 500,1000), 200, 500, (double)3 * Math.PI/4);
+            var locations = Utilities.EvenSphere(new Vector3D(0, 100,1000), 200, 10, 2 * Math.PI);
+
+            
 
 
-            for(int i = 0; i < locations.Count; i++)
+            for(int i = 0; i < 300; i++)
             {
-                var t = locations[i];
                 string color = colors[i%colors.Length];
                 //string color = "black";
                 N8Block CurrentBlock = LevelBlocks.GenerateBlock("simpleland" + color, names[rand.Next(names.Length)]);
-                CurrentBlock.position = t.Item1;
-                CurrentBlock.rotation = t.Item2;
+                CurrentBlock.position.Z = 1000;
+                CurrentBlock.rotation = new Quaternion(new Vector3D(1,0,0), rand.Next(0,360));
             }
             
 

@@ -141,9 +141,10 @@ namespace N8Parser.Level_Modifiers
             return ts;
         }
 
-        public static TronicSequence FlowBank(int MaxFlowStorage, int MinDelay, int MaxDelay)
+        public static Tuple<TronicSequence, List<And>> FlowBank(int MaxFlowStorage, int MinDelay, int MaxDelay)
         {
             TronicSequence ts = new TronicSequence();
+            List<And> stubs = new List<And>(MaxFlowStorage);
 
             DataBlock Zero = ts.NewDataBlock("Zero", "0");
             DataBlock One = ts.NewDataBlock("One", "1");
@@ -158,16 +159,17 @@ namespace N8Parser.Level_Modifiers
             for (int i = 0; i < MaxFlowStorage; i++)
             {
                 DataBlock Timespan = ts.NewDataBlock("Timespan", MinDelay + i * DelayDelta + "");
-                TronicSequence ElseCopy = new TronicSequence();
-                DataBlock ElseGate = ElseCopy.NewDataBlock("Gate " + i, "1");
-                ElseCopy.And(Zero.In, null, ElseGate.Out)
-                        .Delay(Timespan.In)
-                        .And(One.In, null, ElseGate.Out, "Flow Bank Stub");
+                TronicSequence Else = new TronicSequence();
+                DataBlock ElseGate = Else.NewDataBlock("Gate " + i, "1");
+                Else.And(Zero.In, null, ElseGate.Out)
+                    .Delay(Timespan.In)
+                    .And(One.In, null, ElseGate.Out, "Flow Bank Stub");
+                stubs.Add((And)Else.GetCurrent().Item1);
 
-                ts.IfLTE(ElseGate.In, null, "Choice " + i, ElseCopy);
+                ts.IfLTE(ElseGate.In, null, "Choice " + i, Else);
             }
 
-            return ts;
+            return Tuple.Create(ts, stubs);
         }
     }
 }

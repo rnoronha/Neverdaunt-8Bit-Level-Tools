@@ -75,7 +75,8 @@ namespace N8Parser.Tronics
             //FlowIn goes to FlowOut
 
             //First we make sure that we're not related to the same owner. Incest is not allowed!
-            if (this.Owner.ID == other.Owner.ID)
+            //We can't trust IDs any more, so let's figure it out another way.
+            if (this.Owner.Equals(other))
             {
                 throw new Exception("Invalid wiring! From tronic " + this.Owner.ID + " to itself!");
             }
