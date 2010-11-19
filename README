@@ -1,0 +1,84 @@
+A not-so-quick walkthrough of how this is structured; note that there will almost certainly be architectural changes, because I'm still not happy with some things. Keep in mind that this is a C# project, so you'll need either Visual Studio 2010 or Mono to actually do anything with it. I don't know if Mono will work, I use the VS 2010 Express dealiebopper; I do import a Quaternion and Vector3D class from some Microsoft library or another, so Mono might have issues.
+
+The primary object you use in this project is the N8 Level. It provides methods for parsing Neverdaunt cell saves and turning their contents into assorted objects, as well as taking those various objects and turning them back into a Neverdaunt cell save.
+
+There are two classes of objects in an N8 cell - Blocks and Tronics, both of which have an ID, a name, a type, a position and a rotation. There are also two classes of relationships between Blocks and Tronics; Blocks can be attached to each other (and tronics can be attached to blocks, but not the other way around), and tronics can be wired to one another. The cell save file format is a plain text file that encapsulates all of these things.
+
+Here's a rundown of the level format. Lines beginning with # are my comments; keep in mind that there's may not be a way to actually comment N8 cell saves, so putting comments in your cell saves may make the server barf.
+
+####
+#The save files start with no preamble, just straight into the blocks.
+#The basic format is:
+#ID:blocktype:block name:Position vector as x, z, y: rotation quaternion as w, i, j, k
+#Both tronics and blocks use this format, though tronics are slightly augmented.
+#Out of these things, the only one that really matters is the block type; block types must be an existing type. The server essentially ignores IDs when it parses your blocks; you can demonstrate this by loading and saving a save file. The only places where ID matters are during wiring and attachment; otherwise, you can do anything up to and including having multiple blocks with the same ID and the server won't care (it will silently fail to wire tronics that share IDs with something else, and may have other failure modes for attachments but I haven't tested that.
+#Here's a megaland at 0,0,0 with a custom name and a -90 degree Z rotation (all user-placed blocks come out with that rotation for some reason):
+290984:landmega:A land!:0,0,0:0.7071069,1.545522E-08,-0.7071066,1.545522E-08
+#Once you're done with blocks, you have a line that just says "tronics"
+tronics
+118957:cdata:Data In B:-30,318,9:0.7071069,1.545431E-08,-0.7071066,1.545431E-08:DataInB:
+#Note that the tronics have an extra pair of colons (::) - that's where their data goes. This doesn't seem to do anything unless it's a data block, in which case that's the contents of the data block, or a display tronic in which case that's what's shown on the screen (and tabs are newlines).
+118958:cdata:Data In A:-30,318,-15:0.7071069,1.545431E-08,-0.7071066,1.545431E-08:DataInA:
+118959:cdata:Data Out A:25,318,9:0.7071069,1.545431E-08,-0.7071066,1.545431E-08:DataOutA:
+118961:cand:Flow Source:0,318,20:0.7071069,1.545431E-08,-0.7071066,1.545431E-08::
+118962:cand:Flow Sink A:-10,318,-18:0.7071069,1.545431E-08,-0.7071066,1.545431E-08::
+118965:cand:cand:1,318,0:0.7071068,1.545431E-08,-0.7071067,1.545431E-08::
+#Once the tronics are done, there's a line that just says "attach" and the attachments begin
+attach
+118965:290984
+#Attachments are one-way relationships; this means that the tronic named "cand" is attached to the megaland up above; what this means is that the cand tronic will move whenever the megaland moves, but not the other way around. Note that mover and rotor tronics still use this system, but when they move by themselves they move whatever they are attached to, which is completely different from anything else.
+#You cannot form circular attachments.
+#Once there's no more attachments, you have a line that just says "wire" and then the wiring begins
+wire
+118961,1,118965,0
+#All wires are of the format "ID1,Node1,ID2,Node2". The server doesn't seem to care what order they're in. Note that all nodes of the same type have the same number, e.g FlowOutA nodes are always 1 and FlowIn nodes are always 0.
+118965,3,118958,7
+118965,4,118957,7
+118965,5,118959,7
+118965,1,118962,0
+#And then we're done!
+####
+
+All blocks and tronics should be generated from a N8BlockFactory, which keeps track of IDs and things like that - though I just realized that I don't really need IDs until it comes time to generate the level, so I could just drop the whole thing... hmm. Like I said, I'm still not happy with the architecture.
+
+
+An individual Block is encapsulated in the N8Block class; currently, all blocks are N8Blocks and there's no more information about them contained inside the program other than that. You have to manually specify the block type and since I don't have a table of valid block types in the library you'll just have to make sure it's right by hand. 
+
+Tronics, on the other hand, are fairly well typed, primarily because that's what you need to actually make it useful to be able to manage them. Because tronics are normally fairly linear, I've encapsulated that idea in the TronicSequence class. The neat thing about this class is that most of the tronic-adding operations return a modified copy of the class itself, so you can just pile them on.
+
+For example, here's the code for a TronicSequence that generates a random vector with Z always equal to -1000 (this can also be found in the TronicsTesting static class, which should be renamed to something like TronicStructures or something)
+
+public static TronicSequence RandomXYVectorGenerator()
+{
+	TronicSequence ts = new TronicSequence();
+
+	DataBlock v = ts.NewDataBlock("V");
+	v.data = "v";
+
+	DataBlock XYMin = ts.NewDataBlock("XY Min");
+	XYMin.data = "-2000";
+
+	DataBlock XYMax = ts.NewDataBlock("XYZ Max");
+	XYMax.data = "2000";
+
+	DataBlock Z = ts.NewDataBlock("Z Value", ",-1000,");
+
+	DataBlock PartialsA = ts.NewDataBlock("Partial Results A");
+	DataBlock PartialsB = ts.NewDataBlock("Partial Results B");
+
+	//Note how we can just append things like this - 
+	//I think it's a neat structure
+
+	//The interpretation would be "Rand and then And and then..."
+	ts.Rand(XYMin.In, XYMax.In, PartialsA.Out, "X Generator")
+	  .And(v.In, PartialsA.In, PartialsA.Out, "v X concat")
+	  .And(PartialsA.In, Z.In, PartialsB.Out, "vX ,Z, concat")
+	  .Rand(XYMin.In, XYMax.In, PartialsA.Out, "Y Generator")
+	  .And(PartialsB.In, PartialsA.In, PartialsB.Out, "vX,Z, Y concat");
+
+	return ts;
+}
+
+One thing I'm probably going to change about Tronics is that they just store their wires in an List; I want to move the wiring knowledge out to the nodes themselves, because it just makes more sense to ask "what's wired to your FlowIn node?" instead of saying "Out of everything you're wired to, what's connected to FlowIn?"
+
+Anyway, the code for all of the things I've made so far is somewhere in here, primarily in the Level Modifiers folder; hopefully that can serve as an example.
