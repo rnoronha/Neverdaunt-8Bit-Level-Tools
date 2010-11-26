@@ -107,7 +107,6 @@ namespace N8Parser
             double z = R * Math.Cos(Theta);
 
             result = new Vector3D(x, y, z);
-            Console.WriteLine("Returning: " + result);
             return result;
         }
 

@@ -15,9 +15,14 @@ namespace N8Parser
         public static double RadToDeg = 180 / Math.PI;
         public static double DegToRad = Math.PI / 180;
 
+
+        //This might have some useful stuff on tetrahedrons:
+        //http://www.kjmaclean.com/Geometry/Tetrahedron.html
+        //And of course the Wikipedia page:
+        //http://en.wikipedia.org/wiki/Tetrahedron
         public static List<Tuple<Vector3D, Quaternion>> GenerateTetrahedron(Vector3D center, int count, double BlockLength)
         {
-            List<Tuple<Vector3D, Quaternion>> ret = new List<Tuple<Vector3D, Quaternion>>();
+            List<Tuple<Vector3D, Quaternion>> temp = new List<Tuple<Vector3D, Quaternion>>();
 
             //First spherical is the point, second spherical is the angle from that point.
             List<Tuple<Spherical, Spherical>> points = new List<Tuple<Spherical,Spherical>>();
@@ -33,23 +38,57 @@ namespace N8Parser
             }
 
 
-            //Magic!
+            //Magic! I'm sure this is entirely not right at all, but hey it works.
+            //Wikipedia said Sqrt(3/8) * Count * BlockLength, but that just didn't work.
             double RealRadius = 7.0/6.0 * (count * BlockLength/2.0)/(Math.Sin(Math.PI/4.0));
 
-            Console.WriteLine("Radius is: " + RealRadius);
-            Console.WriteLine("Ratio of radius to length: " + RealRadius/(count * BlockLength));
-
+            Vector3D Top = points[0].Item1.ToCartesian();
+            Vector3D MyCenter = new Vector3D(0, 0, 0);
             foreach (var t in points)
             {
                 t.Item1.R = RealRadius;
-                ret.Add(Tuple.Create(t.Item1.ToCartesian() + center, t.Item2.GetNormalRotation()));
+                Vector3D InitPoint = t.Item1.ToCartesian() + center;
+                Quaternion rotation = t.Item2.GetNormalRotation();
+                var LineStuff = GenerateLine(InitPoint, t.Item2, count, BlockLength);
+                List<Vector3D> line = LineStuff.Item1;
+                if (Top.Z < LineStuff.Item2.Z)
+                {
+                    Console.WriteLine("Top is currently: " + Top);
+                    Top = LineStuff.Item2;
+                    Console.WriteLine("Changing it to:   " + Top);
+                    Console.WriteLine("First block in this segment: " + line[0]);
+                }
+
+                foreach (Vector3D point in line)
+                {
+                    temp.Add(Tuple.Create(point, t.Item2.GetNormalRotation()));
+                }
+
+                t.Item1.R = 0;
+                center = t.Item1.ToCartesian();
+                Console.WriteLine("Center is: " + center);
+            }
+
+            Console.WriteLine("Top z is: " + Top);
+            Console.WriteLine("Z downward offset is: " + Math.Sqrt(2.0 / 3.0) * (BlockLength * count / 2.0));
+
+            List<Tuple<Vector3D, Quaternion>> ret = new List<Tuple<Vector3D, Quaternion>>(temp.Count);
+            for(int i = 0; i < temp.Count; i++)
+            {
+                Vector3D p = temp[i].Item1;
+                Console.WriteLine("This point's Z started at: " + p.Z);
+                p.Z -= Top.Z;
+                Console.WriteLine("Subtracted off top z:      " + p.Z);
+                p.Z -= MyCenter.Z;
+                Console.WriteLine("Changed this point's Z to: " + p.Z);
+                ret.Add(Tuple.Create(p, temp[i].Item2));
             }
 
             return ret;
         }
 
 
-        public static List<Vector3D> GenerateLine(Vector3D from, Spherical direction, int count, double BlockLength)
+        public static Tuple<List<Vector3D>, Vector3D> GenerateLine(Vector3D from, Spherical direction, int count, double BlockLength)
         {
             List<Vector3D> points = new List<Vector3D>();
             
@@ -57,17 +96,14 @@ namespace N8Parser
             for (int i = 0; i < count; i++)
             {
                 direction.R = i * BlockLength;
-                Console.WriteLine("Source phi is: " + direction.Phi + ", source theta is: " + direction.Theta);
                 Vector3D temp = direction.ToCartesian();
-                Console.WriteLine("Temp is : " + temp);
                 temp += from;
                 
 
                 points.Add(temp);
             }
-            Console.Read();
-
-            return points;
+            direction.R = count * BlockLength;
+            return Tuple.Create(points, direction.ToCartesian() + from);
         }
 
         public static Vector3D RotateVector(Quaternion rotation, Vector3D vector)

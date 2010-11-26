@@ -27,13 +27,20 @@ namespace N8Parser.Level_Modifiers
 
             //Quaternion rotation = new Quaternion(0,0,0,1);
             //*
-            var points = Utilities.GenerateTetrahedron(new Vector3D(0, 0, 0), 1, 300);
 
-            foreach (var p in points)
+            string[] colors = {"blue", "green", "magenta"};
+            var points = Utilities.GenerateTetrahedron(new Vector3D(0, 0, 0), 3, 160);
+            for (int i = 0; i < 1; i++)
             {
-                N8Block b = Level.blocks.GenerateBlock("pole", "Line");
-                b.position = p.Item1;
-                b.rotation = p.Item2;
+                N8Block ControlPoint = Level.blocks.GenerateBlock("snowmancoal", "Control Point " + i);
+                //ControlPoint.position.Z = 100;
+                foreach (var p in points)
+                {
+                    N8Block b = Level.blocks.GenerateBlock("cartridge." + colors[i%colors.Length] + "light", "Line");
+                    b.position = p.Item1;
+                    b.rotation = p.Item2;
+                    ControlPoint.AttachToMe(b);
+                }
             }
 
             Console.Read();
