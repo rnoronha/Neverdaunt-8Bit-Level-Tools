@@ -19,6 +19,48 @@ namespace N8Parser
         }
 
         /// <summary>
+        /// Convert a quaternion rotation to a point in a spherical coordinate system.
+        /// 
+        /// Who the fuck knows how it works?
+        /// 
+        /// Copied from here: http://web.archive.org/web/20041029003853/http:/www.j3d.org/matrix_faq/matrfaq_latest.html#Q59
+        /// </summary>
+        /// <param name="q"></param>
+        public Spherical(Quaternion q)
+        {
+            coordinates = new Vector3D();
+            this.R = 1;
+
+            double cos_a = q.W;
+            double sin_a = Math.Sqrt(1.0 - cos_a * cos_a);
+
+            double angle = Math.Acos(cos_a) * 2;
+            if (Math.Abs(sin_a) < 0.0000000000005) sin_a = 1;
+
+            double tX = q.X / sin_a;
+            double tY = q.Y / sin_a;
+            double tZ = q.Z / sin_a;
+
+            this.Phi = -Math.Asin(tY);
+            this.Theta = 0;
+
+            if ((tX * tX + tZ * tZ) < 0.0000000000005)
+            {
+                this.Theta = 0;
+            }
+            else
+            {
+                this.Theta = Math.Atan2(tX, tZ);
+            }
+
+            while (this.Theta < 0)
+            {
+                this.Theta += 2 * Math.PI;
+            }
+
+        }
+
+        /// <summary>
         /// Creates a point in a spherical coordinate system.
         /// </summary>
         /// <param name="R">Distance from 0,0,0 to this point</param>
@@ -42,6 +84,16 @@ namespace N8Parser
             coordinates = new Vector3D(r, theta, phi);
         }
 
+        public Quaternion GetNormalRotation()
+        {
+            Quaternion PhiPart = new Quaternion(new Vector3D(0, 0, 1), -(this.Phi * Utilities.RadToDeg));
+            Quaternion ThetaPart = new Quaternion(new Vector3D(0, 1, 0), -this.Theta * Utilities.RadToDeg);
+
+            Quaternion rotation = ThetaPart * PhiPart;
+
+            return rotation;
+        }
+
         /// <summary>
         /// Retrieves a Cartesian representation of this point
         /// </summary>
@@ -55,7 +107,7 @@ namespace N8Parser
             double z = R * Math.Cos(Theta);
 
             result = new Vector3D(x, y, z);
-
+            Console.WriteLine("Returning: " + result);
             return result;
         }
 

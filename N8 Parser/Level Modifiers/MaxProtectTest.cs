@@ -91,7 +91,7 @@ namespace N8Parser
                     .Mover(ReturnPos.In, ReturnPos.Out, "Return Mover")
                     .RadioTransmit(Channel.In, ControlBit.In, "Yeller");
 
-            TronicSequence RandomVector = TronicsTesting.RandomXYVectorGenerator();
+            TronicSequence RandomVector = TronicsTesting.RandomXYVectorGenerator(-1000, 1000);
             DataBlock RandVect = RandomVector.data[RandomVector.data.Count - 1];
 
             foreach (FlowTronic prox in proxies)

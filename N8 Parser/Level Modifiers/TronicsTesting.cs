@@ -99,16 +99,21 @@ namespace N8Parser.Level_Modifiers
 
         public static TronicSequence RandomXYVectorGenerator()
         {
+            return RandomXYVectorGenerator(-2000, 2000);
+        }
+
+        public static TronicSequence RandomXYVectorGenerator(int min, int max)
+        {
             TronicSequence ts = new TronicSequence();
 
             DataBlock v = ts.NewDataBlock("V");
             v.data = "v";
 
             DataBlock XYMin = ts.NewDataBlock("XY Min");
-            XYMin.data = "-2000";
+            XYMin.data = min + "";
 
             DataBlock XYMax = ts.NewDataBlock("XYZ Max");
-            XYMax.data = "2000";
+            XYMax.data = max + "";
 
             DataBlock Z = ts.NewDataBlock("Z Value", ",-1000,");
 

@@ -48,6 +48,7 @@
     <Compile Include="Geometry\SidewaysCylindrical.cs" />
     <Compile Include="Level Modifiers\AddMoon.cs" />
     <Compile Include="Level Modifiers\Flies.cs" />
+    <Compile Include="Level Modifiers\GeometriesTest.cs" />
     <Compile Include="Level Modifiers\SCIENCE.cs" />
     <Compile Include="Level Modifiers\ShiftSave.cs" />
     <Compile Include="Level Modifiers\Tetrahedron.cs" />
