@@ -43,7 +43,6 @@ namespace N8Parser
             double RealRadius = 7.0/6.0 * (count * BlockLength/2.0)/(Math.Sin(Math.PI/4.0));
 
             Vector3D Top = points[0].Item1.ToCartesian();
-            Vector3D MyCenter = new Vector3D(0, 0, 0);
             foreach (var t in points)
             {
                 t.Item1.R = RealRadius;
@@ -70,7 +69,7 @@ namespace N8Parser
             }
 
             Console.WriteLine("Top z is: " + Top);
-            Console.WriteLine("Z downward offset is: " + Math.Sqrt(2.0 / 3.0) * (BlockLength * count / 2.0));
+            Console.WriteLine("Z downward offset is: " + Math.Sqrt(3.0)/(2.0 * Math.Sqrt(2.0)) * (BlockLength * count));
 
             List<Tuple<Vector3D, Quaternion>> ret = new List<Tuple<Vector3D, Quaternion>>(temp.Count);
             for(int i = 0; i < temp.Count; i++)
@@ -79,7 +78,7 @@ namespace N8Parser
                 Console.WriteLine("This point's Z started at: " + p.Z);
                 p.Z -= Top.Z;
                 Console.WriteLine("Subtracted off top z:      " + p.Z);
-                p.Z -= MyCenter.Z;
+                p.Z += Math.Sqrt(3.0) / (2.0 * Math.Sqrt(2.0)) * (BlockLength * count);
                 Console.WriteLine("Changed this point's Z to: " + p.Z);
                 ret.Add(Tuple.Create(p, temp[i].Item2));
             }

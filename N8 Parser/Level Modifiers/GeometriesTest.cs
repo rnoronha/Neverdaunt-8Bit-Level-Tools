@@ -30,10 +30,10 @@ namespace N8Parser.Level_Modifiers
 
             string[] colors = {"blue", "green", "magenta"};
             var points = Utilities.GenerateTetrahedron(new Vector3D(0, 0, 0), 3, 160);
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 5; i++)
             {
                 N8Block ControlPoint = Level.blocks.GenerateBlock("snowmancoal", "Control Point " + i);
-                //ControlPoint.position.Z = 100;
+                ControlPoint.position.Z = 100;
                 foreach (var p in points)
                 {
                     N8Block b = Level.blocks.GenerateBlock("cartridge." + colors[i%colors.Length] + "light", "Line");

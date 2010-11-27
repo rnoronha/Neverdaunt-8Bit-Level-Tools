@@ -29,7 +29,7 @@ namespace N8Parser
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 90, 250, (double)8 / 16 * Math.PI));
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 145, 350, (double)9 / 16 * Math.PI));
             points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 150, 450, (double)9 / 16 * Math.PI));
-            points.AddRange(Utilities.EvenCircle(new Vector3D(0,0,50), 90, 550));
+            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 90, 550));
             points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 145, 600));
             //*/
 
