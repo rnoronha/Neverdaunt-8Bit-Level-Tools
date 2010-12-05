@@ -47,6 +47,7 @@
     <Compile Include="Geometry\Cylindrical.cs" />
     <Compile Include="Geometry\SidewaysCylindrical.cs" />
     <Compile Include="Level Modifiers\AddMoon.cs" />
+    <Compile Include="Level Modifiers\DeIsland.cs" />
     <Compile Include="Level Modifiers\Flies.cs" />
     <Compile Include="Level Modifiers\GeometriesTest.cs" />
     <Compile Include="Level Modifiers\SCIENCE.cs" />

@@ -99,10 +99,10 @@ namespace N8Parser.Level_Modifiers
 
         public static TronicSequence RandomXYVectorGenerator()
         {
-            return RandomXYVectorGenerator(-2000, 2000);
+            return RandomXYVectorGenerator(-2000, 2000, -1000);
         }
 
-        public static TronicSequence RandomXYVectorGenerator(int min, int max)
+        public static TronicSequence RandomXYVectorGenerator(int min, int max, int zValue)
         {
             TronicSequence ts = new TronicSequence();
 
@@ -115,7 +115,7 @@ namespace N8Parser.Level_Modifiers
             DataBlock XYMax = ts.NewDataBlock("XYZ Max");
             XYMax.data = max + "";
 
-            DataBlock Z = ts.NewDataBlock("Z Value", ",-1000,");
+            DataBlock Z = ts.NewDataBlock("Z Value", ","+ zValue + ",");
 
             DataBlock PartialsA = ts.NewDataBlock("Partial Results A");
             DataBlock PartialsB = ts.NewDataBlock("Partial Results B");
@@ -145,7 +145,7 @@ namespace N8Parser.Level_Modifiers
 
             return ts;
         }
-
+        
         public static Tuple<TronicSequence, List<And>> FlowBank(int MaxFlowStorage, int MinDelay, int MaxDelay)
         {
             TronicSequence ts = new TronicSequence();
@@ -176,5 +176,6 @@ namespace N8Parser.Level_Modifiers
 
             return Tuple.Create(ts, stubs);
         }
+        
     }
 }

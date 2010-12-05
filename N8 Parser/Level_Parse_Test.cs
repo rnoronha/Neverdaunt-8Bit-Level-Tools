@@ -11,8 +11,10 @@ namespace N8Parser
     {
         static void Main(string[] args)
         {
-            GeometriesTest.GenerateLevel();
-            //MaxProtectTest.GenerateProxyBubble();
+            //DeIsland.GenerateLevel(@"C:\Program Files (x86)\N8\Saves\mosquito.ncd");
+            //GeometriesTest.GenerateLevel();
+            MaxProtectTest.GenerateProxyBubble();
+            //MaxProtectTest.GenerateProxyBimesh();
             //MaxProtectTest.GenerateLevel();
             //Flies.GenerateLevel();
             //Eyestrain.GenerateLevel();

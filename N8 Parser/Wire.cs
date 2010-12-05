@@ -50,7 +50,7 @@ namespace N8Parser
             {
                 OtherSide = Left.Owner;
             }
-            else if (Right.Owner != CurrentSide && Right.Owner == CurrentSide)
+            else if (Right.Owner != CurrentSide && Left.Owner == CurrentSide)
             {
                 OtherSide = Right.Owner;
             }

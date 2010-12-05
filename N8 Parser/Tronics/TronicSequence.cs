@@ -12,8 +12,7 @@ namespace N8Parser
         public N8BlockFactory tronics;
         private FlowTronic CurrentTronic;
         private Node CurrentOut;
-        private FlowTronic LastBranch;
-        private Node LastBranchNode;
+        private Stack<Tuple<FlowTronic, Node>> Branches;
         private List<FlowTronic> sequence;
         public List<DataBlock> data;
 
@@ -33,6 +32,7 @@ namespace N8Parser
             data = new List<DataBlock>();
             tronics = new N8BlockFactory();
             sequence = new List<FlowTronic>();
+            Branches = new Stack<Tuple<FlowTronic, Node>>();
         }
 
         public TronicSequence(N8Tronic Initial, NodeType InitialOut = NodeType.FlowOutA)
@@ -42,6 +42,7 @@ namespace N8Parser
             CurrentTronic = (FlowTronic)Initial;
             CurrentOut = Initial.GetNode(InitialOut);
             sequence = new List<FlowTronic>();
+            Branches = new Stack<Tuple<FlowTronic, Node>>();
         }
 
         public void FlowInFrom(FlowTronic n, NodeType Out = NodeType.FlowOutA)
@@ -183,8 +184,7 @@ namespace N8Parser
 
         private void NoteBranch(NodeType node)
         {
-            LastBranch = CurrentTronic;
-            LastBranchNode = CurrentTronic.GetNode(node);
+            Branches.Push(Tuple.Create(CurrentTronic, CurrentTronic.GetNode(node)));
         }
 
         public TronicSequence IfNotEqual(DataNodeIn DataInA, DataNodeIn DataInB, string name = "IfNotEquals", TronicSequence Else = null)
@@ -253,13 +253,13 @@ namespace N8Parser
             return this;
         }
 
-        public TronicSequence Delay(DataNodeIn DataInA, string name = "Delay")
+        public TronicSequence Delay(DataNodeIn DataInA = null, string name = "Delay")
         {
             CheckCanAppend();
 
             FlowTronic NextTronic = tronics.Delay(name);
 
-
+  
             NextTronic.DataInA(DataInA);
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutA));
@@ -553,9 +553,10 @@ namespace N8Parser
             }
         }
 
-        internal void Else(TronicSequence ElseBranch)
+        internal void ElseInternal(TronicSequence ElseBranch)
         {
-            ElseBranch.GetFirst().FlowInFrom(LastBranch, LastBranchNode);
+            var LastBranch = Branches.Pop();
+            ElseBranch.GetFirst().FlowInFrom(LastBranch.Item1, LastBranch.Item2);
         }
     }
 }

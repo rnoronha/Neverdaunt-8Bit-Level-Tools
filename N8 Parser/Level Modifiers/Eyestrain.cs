@@ -61,9 +61,9 @@ namespace N8Parser.Level_Modifiers
             {
                 string color = colors[i%colors.Length];
                 //string color = "black";
-                N8Block CurrentBlock = LevelBlocks.GenerateBlock("simpleland" + color, names[rand.Next(names.Length)]);
-                CurrentBlock.position.Z = 1000;
-                CurrentBlock.rotation = new Quaternion(new Vector3D(1,0,0), rand.Next(0,360));
+                N8Block CurrentBlock = LevelBlocks.GenerateBlock("simple." + color + ".land.mega", names[rand.Next(names.Length)]);
+                CurrentBlock.position.Z = 700;
+                CurrentBlock.rotation = new Quaternion(new Vector3D(0,0,1), rand.Next(0,360)) * new Quaternion(new Vector3D(0,1,0), 90);
             }
             
 

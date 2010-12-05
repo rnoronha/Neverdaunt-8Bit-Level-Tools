@@ -25,7 +25,7 @@ namespace N8Parser
                 string input;
 
                 //Parse blocks
-                while ((input = sr.ReadLine()) != "tronics")
+                while ((input = sr.ReadLine()) != "tronics" && input != null)
                 {
                     lineNum++;
                     blocks.AddBlockFromSave(input);
@@ -33,14 +33,14 @@ namespace N8Parser
 
                 //Parse tronics (not sure why they're different, the format is the same
                 //But Aion put them in their own section so I'll do the same
-                while ((input = sr.ReadLine()) != "attach")
+                while ((input = sr.ReadLine()) != "attach" && input != null)
                 {
                     lineNum++;
                     blocks.AddTronicFromSave(input);
                 }
 
                 //Parse attachments
-                while ((input = sr.ReadLine()) != "wire")
+                while ((input = sr.ReadLine()) != "wire" && input != null)
                 {
                     lineNum++;
                     N8Block Attachee;
