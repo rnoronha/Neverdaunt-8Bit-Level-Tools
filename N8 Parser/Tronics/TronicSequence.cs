@@ -35,6 +35,21 @@ namespace N8Parser
             Branches = new Stack<Tuple<FlowTronic, Node>>();
         }
 
+        public TronicSequence(N8BlockFactory blocks)
+        {
+            data = new List<DataBlock>();
+            if (blocks == null)
+            {
+                tronics = new N8BlockFactory();
+            }
+            else
+            {
+                tronics = blocks;
+            }
+            sequence = new List<FlowTronic>();
+            Branches = new Stack<Tuple<FlowTronic, Node>>();
+        }
+
         public TronicSequence(N8Tronic Initial, NodeType InitialOut = NodeType.FlowOutA)
         {
             data = new List<DataBlock>();
@@ -267,10 +282,11 @@ namespace N8Parser
             return this;
         }
 
-        public TronicSequence Display(DataNodeIn DataInA, string name = "Display")
+        public TronicSequence Display(DataNodeIn DataInA, string name = "Display", string DefaultText = "")
         {
             CheckCanAppend();
             FlowTronic NextTronic = tronics.Display(name);
+            NextTronic.data = DefaultText;
 
             NextTronic.DataInA(DataInA);
 
@@ -370,36 +386,33 @@ namespace N8Parser
             return this;
         }
 
-        public static TronicSequence StartFromKeyboard(DataNodeOut DataOut = null, string name = "Keyboard")
+        public static TronicSequence StartFromKeyboard(N8BlockFactory Blocks = null, DataNodeOut DataOut = null, string name = "Keyboard")
         {
-            TronicSequence ts = new TronicSequence();
-
+            TronicSequence ts = new TronicSequence(Blocks);
             ts.Keyboard(DataOut, name);
 
             return ts;
         }
 
-        public static TronicSequence StartFromButton(int type = 1, string name = "Button")
+        public static TronicSequence StartFromButton(N8BlockFactory Blocks = null, int type = 1, string name = "Button")
         {
-            TronicSequence ts = new TronicSequence();
-
+            TronicSequence ts = new TronicSequence(Blocks);
             ts.Button(type, name);
 
             return ts;
         }
 
-        public static TronicSequence StartFromProxy(string name = "Proxy")
+        public static TronicSequence StartFromProxy(N8BlockFactory Blocks = null, string name = "Proxy")
         {
-            TronicSequence ts = new TronicSequence();
-
+            TronicSequence ts = new TronicSequence(Blocks);
             ts.Proxy(name);
 
             return ts;
         }
 
-        public static TronicSequence StartFromReciever(DataNodeIn Channel, DataNodeOut Username, DataNodeOut Message, string name = "Reciever")
+        public static TronicSequence StartFromReciever(DataNodeIn Channel, DataNodeOut Username, DataNodeOut Message, N8BlockFactory Blocks = null, string name = "Reciever")
         {
-            TronicSequence ts = new TronicSequence();
+            TronicSequence ts = new TronicSequence(Blocks);
             ts.Button(1, "Reciever Setup")
               .RadioReciever(Channel, Username, Message, name);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using N8Parser.Tronics;
+using System.Text.RegularExpressions;
 
 namespace N8Parser
 {
@@ -44,7 +45,11 @@ namespace N8Parser
 
         public override string ToString()
         {
-            return base.ToString() + ":" + data + ":";
+            string SanitizedData = data;
+            SanitizedData = SanitizedData.Replace(":", "\b");
+            SanitizedData = SanitizedData.Replace("\n", "/n ");
+            
+            return base.ToString() + ":" + SanitizedData + ":";
         }
 
         public void CheckWiringCompat(Wire w)
@@ -170,33 +175,6 @@ namespace N8Parser
         public bool HasNode(NodeType t)
         {
             return GetNode(t) != null;
-        }
-
-
-        //For tronics, IDs kinda matter - a wire's location in the sorted set depends on the tronic's ID. 
-        //However, they don't get put into the sorted set until they're being written out to a level, and IDs shouldn't be changing then.
-        //Actually now that I think about it, you don't even need to do that - the sorted set isn't necessary until
-        //we go to actually calculate the level, and IDs should be finalized at that point.
-        /*
-        public override void ChangeID(int newID)
-        {
-            base.ChangeID(newID);
-
-            //We have to change my wires, and everyone else's wires.
-            List<Wire> MyOldWires = WiredTo;
-
-            //Then remove them all
-            RemoveAllWires();
-
-            //And we have to manually re-wire them back to WiredTo; if we just make a copy, it won't work - I think.
-            //Note that wireto handles both my side and the other side of the equation
-            foreach (Wire w in MyOldWires)
-            {
-                this.WireTo(w);
-            }
-        }
-        */
-
-        
+        }        
     }
 }

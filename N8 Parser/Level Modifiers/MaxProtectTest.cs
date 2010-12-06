@@ -72,6 +72,7 @@ namespace N8Parser
                 Console.WriteLine("Warning, " + proxies.Count + " proxies!");
                 Console.ReadLine();
             }
+
             Keyboard kb = LevelBlocks.Keyboard("Set Cell Password");
             kb.position = new Vector3D(30, -30, 5);
 
@@ -145,6 +146,15 @@ namespace N8Parser
                          .Append(RandomBottomVector)
                          .Mover(RandVectBottom.In, null, "Flee Mover 2");
 
+
+            DataBlock CurrentCount = MovementLogic.NewDataBlock("Count", "0");
+            DataBlock Message = MovementLogic.NewDataBlock("Message", "Number of attempts to take this shrine since last load\b ");
+            DataBlock One = MovementLogic.NewDataBlock("One", "1");
+            DataBlock MessageDisplay = MovementLogic.NewDataBlock("Message text");
+
+            MovementLogic.Plus(CurrentCount.In, One.In, CurrentCount.Out)
+                        .And(Message.In, CurrentCount.In, MessageDisplay.Out);
+
             MovementLogic.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
             Reciever.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
             foreach (N8Tronic t in Reciever.tronics.TronicsByID.Values)
@@ -169,8 +179,13 @@ namespace N8Parser
 
             }
 
+            MovementLogic.Display(MessageDisplay.In, "Message", "Number of attempts since last load\b 0");
             LevelBlocks.CopyFromDestructive(MovementLogic.tronics);
             LevelBlocks.CopyFromDestructive(Reciever.tronics);
+            LevelBlocks.Display("TakeMessage", "Congratulations on taking this cell! /n " +
+                                               "The tokens in it are yours, I hope they cover your expenses \b) /n " +
+                                               "There is a 10 ticket reward for telling Tacroy how you took it /n " +
+                                               "Send him a message on the forums or contact him when he's online to claim your prize.");
 
             N8Tronic RetMover = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Return Mover" select t).First();
             N8Tronic FleeMover1 = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Flee Mover 1" select t).First();
@@ -187,6 +202,9 @@ namespace N8Parser
             FleeMover2.Detach();
 
             TronicAttach.AttachToMe(Rotor);
+
+            Console.WriteLine("Total block count: " + (LevelBlocks.BlocksByID.Count + LevelBlocks.TronicsByID.Count));
+            Console.Read();
         }
 
         public static void GenerateProxyBubble()
@@ -217,7 +235,9 @@ namespace N8Parser
             points.Add(Tuple.Create(new Vector3D(50, -50, 50), new Quaternion()));
             points.Add(Tuple.Create(new Vector3D(-50, -50, 50), new Quaternion()));
             //*
-            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 90, 500, (double)8 / 16 * Math.PI));
+            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 80, 500, (double)8 / 16 * Math.PI));
+            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 110, 600));
+            //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 90, 700));
             //*/
 
             Quaternion InitialRotation = new Quaternion(new Vector3D(0, 0, 1), -90) * new Quaternion(new Vector3D(0,1,0), 90);

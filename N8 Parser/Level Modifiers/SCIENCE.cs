@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Media3D;
+using N8Parser.Tronics;
 
 namespace N8Parser.Level_Modifiers
 {
@@ -11,70 +12,49 @@ namespace N8Parser.Level_Modifiers
         public static void GenerateLevel()
         {
             string SavePath = @"C:\Program Files (x86)\N8\Saves\science.ncd";
-            N8Level level = new N8Level(@"C:\Program Files (x86)\N8\Saves\default.ncd");
-            var center = new Vector3D(1000, 1000, 70);
-            int BlockCounter = 0;
-            List<N8Block> MarkerXs = new List<N8Block>();
-            List<N8Block> MarkerYs = new List<N8Block>();
-            List<N8Block> MarkerZs = new List<N8Block>();
-            for (int i = 0; i < 1000; i+= 5)
+            N8Level Level = new N8Level();
+
+
+            TronicSequence ts = TronicSequence.StartFromButton(Level.blocks);
+            ts.GetFirst().position.Z = 300;
+
+            int counter = 0;
+            for (int i = -4; i < 4; i++)
             {
-                if (BlockCounter + 25 > 324)
+                for (int j = -4; j < 4; j++)
                 {
-                    break;
+                    counter++;
+                    int x = i * 250;
+                    int y = j * 250;
+                    N8Block pixel = Level.blocks.GenerateBlock("White QuadPixel", "" + counter);
+
+                    DataBlock MoverData = ts.NewDataBlock("Mover Data", "v" + x + ",1000," + y);
+                    DataBlock RotorData = ts.NewDataBlock("Rotor Data", "q0.7071069,0,-0.7071065,0");
+                    RotorData.position.Z = 35;
+                    MoverData.position.Z = 35;
+                    
+                    ts.Rotor(RotorData.In, RotorData.Out, "" + counter);
+                    Rotor r = (Rotor)ts.GetCurrent().Item1;
+                    r.position.Z = 35;
+
+                    ts.Mover(MoverData.In, MoverData.Out, "" + counter);
+                    Mover m = (Mover)ts.GetCurrent().Item1;
+                    m.position.Z = 35;
+
+                    
+                    
+                    pixel.position.X = x;
+                    pixel.position.Y = y;
+
+                    pixel.AttachToMe(r);
+                    pixel.AttachToMe(m);
+                    pixel.AttachToMe(MoverData);
+                    pixel.AttachToMe(RotorData);
                 }
-                BlockCounter += 25;
-
-                for (int j = 0; j < 5; j++)
-                {
-                    for (int k = 0; k < 5; k++)
-                    {
-                        N8Block marker = level.blocks.GenerateBlock("snowmancoal", "Depth=" + i);
-                        marker.position.X = j*5;
-                        marker.position.Y = k*5;
-                        marker.position.Z = i*2;
-                        marker.position += center;
-
-                    }
-                }
             }
 
-            /*
-            var LastMarkerX = MarkerXs[MarkerXs.Count - 1];
-            MarkerXs.Remove(LastMarkerX);
-            LastMarkerX.position.X = -LastMarkerX.position.X + center.X;
-            LastMarkerX.position.Y = center.Y;
-            LastMarkerX.position.Z = center.Z;
-
-            var LastMarkerY = MarkerYs[MarkerYs.Count - 1];
-            MarkerYs.Remove(LastMarkerY);
-            LastMarkerY.position.X = center.X;
-            LastMarkerY.position.Y = -LastMarkerY.position.Y + center.Y;
-            LastMarkerY.position.Z = center.Z;
-
-            var LastMarkerZ = MarkerZs[MarkerZs.Count - 1];
-            MarkerZs.Remove(LastMarkerZ);
-            LastMarkerZ.position.X = center.X;
-            LastMarkerZ.position.Y = center.Y;
-            LastMarkerZ.position.Z = -LastMarkerZ.position.Z + center.Z;
-
-            foreach (var b in MarkerXs)
-            {
-                LastMarkerX.AttachToMe(b);
-            }
-
-            foreach (var b in MarkerYs)
-            {
-                LastMarkerY.AttachToMe(b);
-            }
-
-            foreach (var b in MarkerZs)
-            {
-                LastMarkerZ.AttachToMe(b);
-            }*/
+            Utilities.Save(SavePath, Level);
             
-
-            Utilities.Save(SavePath, level);
         }
     }
 }

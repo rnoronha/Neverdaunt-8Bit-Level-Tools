@@ -89,7 +89,7 @@ namespace N8Parser
 
         public virtual void ChangeID(int newID)
         {
-            _id = newID;            
+            _id = newID;         
         }
 
         public override string ToString()
@@ -109,8 +109,6 @@ namespace N8Parser
             this.Attachees.Add(other);
             other.AttachedTo = this;
             //Coordinate systems get translated too - now other's coords are relative to this, instead of 0,0,0
-
-            
         }
 
         /// <summary>
@@ -119,7 +117,7 @@ namespace N8Parser
         /// <param name="?"></param>
         public void AttachToMeAbsolute(N8Block other)
         {
-            other.position -= this.position;
+            other.position = other.position - this.position;
             AttachToMe(other);
         }
 

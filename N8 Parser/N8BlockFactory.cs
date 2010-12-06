@@ -18,8 +18,6 @@ namespace N8Parser
         public int BlockCount = 0;
         public static int MaxBlockCount = 349;
 
-        
-
         public N8BlockFactory() 
         {
             BlocksByID = new SortedDictionary<int, N8Block>();
@@ -154,19 +152,45 @@ namespace N8Parser
             CopyFromDestructive(copy);
         }
 
+        public bool ChangeID(N8Block block, int newID = -1)
+        {
+            if(newID == -1)
+                newID = GetNewID();
+
+            if (IDInUse(newID))
+                return false;
+            else
+            {
+                if (this.BlocksByID.ContainsKey(block.ID))
+                {
+                    this.BlocksByID.Remove(block.ID);
+                }
+                else if (this.TronicsByID.ContainsKey(block.ID))
+                {
+                    this.TronicsByID.Remove(block.ID);
+                }
+
+                block.ChangeID(newID);
+
+                if (block is N8Tronic)
+                {
+                    this.TronicsByID.Add(newID, (N8Tronic)block);
+                }
+                else
+                {
+                    this.BlocksByID.Add(newID, block);
+                }
+
+                return true;
+            }
+        }
         
         internal void CopyFromDestructive(N8BlockFactory copy)
         {
             //We're merging the other guy with us, so when it comes down to it it's his shit that needs to change
             foreach (N8Block b in copy.BlocksByID.Values)
             {
-                if (IDInUse(b.ID))
-                {
-                    int NewID = GetNewID();
-                    b.ChangeID(NewID);
-                }
-
-                this.BlocksByID.Add(b.ID, b);
+                ChangeID(b);
             }
 
             //If a block and a tronic conflict, we'll change the block.
@@ -181,21 +205,13 @@ namespace N8Parser
                         //Then have him change, the lazy bastard
                         this.BlocksByID.TryGetValue(t.ID, out conflictor);
 
-                        this.BlocksByID.Remove(conflictor.ID);
-
-                        int NewID = GetNewID();
-                        conflictor.ChangeID(NewID);
-                        this.BlocksByID.Add(conflictor.ID, conflictor);
-                        
+                        ChangeID(conflictor);
                     }
                     else
                     {
-                        int NewID = GetNewID();
-                        t.ChangeID(NewID);
+                        ChangeID(t);
                     }
                 }
-
-                this.TronicsByID.Add(t.ID, t);
             }
 
 
@@ -304,10 +320,11 @@ namespace N8Parser
 
         }
 
-        public Display Display(string name = "Display")
+        public Display Display(string name = "Display", string DefaultMessage = "")
         {
             int NewID = GetNewID();
             Display temp = new Display(NewID, name);
+            temp.data = DefaultMessage;
             TronicsByID.Add(NewID, temp);
             return temp;
         }

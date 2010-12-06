@@ -15,6 +15,12 @@ namespace N8Parser
         public static double RadToDeg = 180 / Math.PI;
         public static double DegToRad = Math.PI / 180;
 
+        public static IEnumerable<N8Block> GetNotLands(N8Level Input)
+        {
+            var NotLands = from N8Block b in Input.blocks.BlocksByID.Values where b.type != "landmega" select b;
+            return NotLands;
+        }
+     
 
         //This might have some useful stuff on tetrahedrons:
         //http://www.kjmaclean.com/Geometry/Tetrahedron.html
@@ -260,26 +266,26 @@ namespace N8Parser
         /// <param name="BlockName">The name of the block to use</param>
         /// <param name="level">The level to add the sphere to</param>
         /// <returns></returns>
-        public static List<N8Block> GenerateSphere(Vector3D Around, Vector3D BlockSize, Quaternion InitialRotation, double Radius, string BlockType, string BlockName, N8Level level)
+        public static List<Tuple<Vector3D, Quaternion>> GenerateSphere(Vector3D Around, double Radius, int quantity=324, Random rand = null)
         {
-            List<N8Block> ret = new List<N8Block>(324);
+            List<Tuple<Vector3D, Quaternion>> ret = new List<Tuple<Vector3D, Quaternion>>(quantity);
             double RadToDeg = 180 / Math.PI;
-            Random rand = new Random();
-            for (int i = 0; i < 324; i++)
+            if (rand == null)
+            {
+                rand = new Random();
+            }
+            for (int i = 0; i < quantity; i++)
             {
                 Spherical position = rand.NextSpherical();
                 position.R = Radius;
-                //Quaternion rotation = rand.NextQuaternion();
 
                 Quaternion PhiPart = new Quaternion(new Vector3D(0, 0, 1), -(position.Phi * RadToDeg));
                 Quaternion ThetaPart = new Quaternion(new Vector3D(0, 1, 0), -position.Theta * RadToDeg);
 
-                Quaternion rotation = InitialRotation * ThetaPart * PhiPart;
-                N8Block CurrentBlock = level.blocks.GenerateBlock(BlockType, BlockName);
+                Quaternion rotation = ThetaPart * PhiPart;
+                Vector3D pos = position.ToCartesian() + Around;
 
-                CurrentBlock.position = position.ToCartesian() + Around;
-                CurrentBlock.rotation = rotation;
-                ret.Add(CurrentBlock);
+                ret.Add(Tuple.Create(pos, rotation));
             }
 
             return ret;
