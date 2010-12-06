@@ -13,7 +13,7 @@ namespace N8Parser.Level_Modifiers
             N8Level Base = new N8Level(BasePath);
             N8Level megadefault = new N8Level(@"C:\Program Files (x86)\N8\Saves\default.ncd");
 
-            foreach (N8Block b in megadefault.blocks.BlocksByID.Values)
+            foreach (N8Block b in megadefault.blocks.BlocksByID)
             {
                 b.position.Z -= 1;
             }

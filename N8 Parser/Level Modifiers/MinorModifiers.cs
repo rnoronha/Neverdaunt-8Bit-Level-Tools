@@ -41,9 +41,9 @@ namespace N8Parser.Level_Modifiers
         {
             IEnumerable<N8Block> BlocksByY;
             if(Ascending)
-                BlocksByY = Input.blocks.BlocksByID.Values.OrderBy((b) => b.position.Y);
+                BlocksByY = Input.blocks.BlocksByID.OrderBy((b) => b.position.Y);
             else
-                BlocksByY = Input.blocks.BlocksByID.Values.OrderByDescending((b) => b.position.Y);
+                BlocksByY = Input.blocks.BlocksByID.OrderByDescending((b) => b.position.Y);
 
             int count = 1;
             foreach (N8Block b in BlocksByY)
@@ -59,9 +59,9 @@ namespace N8Parser.Level_Modifiers
         {
             IEnumerable<N8Block> BlocksByX;
             if (Ascending)
-                BlocksByX = Input.blocks.BlocksByID.Values.OrderBy((b) => b.position.X);
+                BlocksByX = Input.blocks.BlocksByID.OrderBy((b) => b.position.X);
             else
-                BlocksByX = Input.blocks.BlocksByID.Values.OrderByDescending((b) => b.position.X);
+                BlocksByX = Input.blocks.BlocksByID.OrderByDescending((b) => b.position.X);
 
             int count = 1;
             foreach (N8Block b in BlocksByX)
@@ -77,9 +77,9 @@ namespace N8Parser.Level_Modifiers
         {
             IEnumerable<N8Block> BlocksByZ;
             if (Ascending)
-                BlocksByZ = Input.blocks.BlocksByID.Values.OrderBy((b) => b.position.Z);
+                BlocksByZ = Input.blocks.BlocksByID.OrderBy((b) => b.position.Z);
             else
-                BlocksByZ = Input.blocks.BlocksByID.Values.OrderByDescending((b) => b.position.Z);
+                BlocksByZ = Input.blocks.BlocksByID.OrderByDescending((b) => b.position.Z);
 
             int count = 1;
             foreach (N8Block b in BlocksByZ)

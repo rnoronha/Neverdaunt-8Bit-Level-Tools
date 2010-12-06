@@ -18,7 +18,7 @@ namespace N8Parser.Level_Modifiers
         public static N8Level GetLevel(string InputPath, Vector3D ShiftAmount)
         {
             N8Level Level = new N8Level(InputPath);
-            foreach (N8Block b in Level.blocks.BlocksByID.Values)
+            foreach (N8Block b in Level.blocks.BlocksByID)
             {
                 //If b is attached to something, it'll get rotated when whatever it's attached to is rotated.
                 if (b.AttachedTo != null)

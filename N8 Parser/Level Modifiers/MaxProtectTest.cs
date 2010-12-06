@@ -157,7 +157,7 @@ namespace N8Parser
 
             MovementLogic.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
             Reciever.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
-            foreach (N8Tronic t in Reciever.tronics.TronicsByID.Values)
+            foreach (N8Tronic t in Reciever.tronics.TronicsByID)
             {
                 TronicAttach.AttachToMeAbsolute(t);
             }
@@ -169,7 +169,7 @@ namespace N8Parser
                 TronicAttach.AttachToMe(t);
             }
 
-            foreach (N8Tronic t in LevelBlocks.TronicsByID.Values)
+            foreach (N8Tronic t in LevelBlocks.TronicsByID)
             {
                 if (!(t.type == "rkeyboard"))
                 {
@@ -187,10 +187,10 @@ namespace N8Parser
                                                "There is a 10 ticket reward for telling Tacroy how you took it /n " +
                                                "Send him a message on the forums or contact him when he's online to claim your prize.");
 
-            N8Tronic RetMover = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Return Mover" select t).First();
-            N8Tronic FleeMover1 = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Flee Mover 1" select t).First();
-            N8Tronic FleeMover2 = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Flee Mover 2" select t).First();
-            N8Tronic Rotor = (from N8Tronic t in LevelBlocks.TronicsByID.Values where t.name == "Rotate1" select t).First();
+            N8Tronic RetMover = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Return Mover" select t).First();
+            N8Tronic FleeMover1 = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Flee Mover 1" select t).First();
+            N8Tronic FleeMover2 = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Flee Mover 2" select t).First();
+            N8Tronic Rotor = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Rotate1" select t).First();
 
             RetMover.position.Z = -1000;
             FleeMover1.position.Z = 100;
@@ -292,7 +292,7 @@ namespace N8Parser
 
             proxies.MergeWithDestructive(tronics);
 
-            N8Tronic MoverGateway = (from N8Tronic b in proxies.blocks.TronicsByID.Values where b.type == "cifgreat" select b).First();
+            N8Tronic MoverGateway = (from N8Tronic b in proxies.blocks.TronicsByID where b.type == "cifgreat" select b).First();
             
             N8Block ControlPoint = LevelBlocks.GenerateBlock("snowmancoal", "Control Point");
             ControlPoint.position.X = -100;
@@ -359,10 +359,10 @@ namespace N8Parser
             
 
             //Non position dependent tronics - tronics whose position doesn't matter
-            var NPDTronics = from N8Tronic t in LevelBlocks.TronicsByID.Values
+            var NPDTronics = from N8Tronic t in LevelBlocks.TronicsByID
                                         where !(t.type == "rproximity" || t.type == "rkeyboard" || t.type == "tmover")
                                         select t;
-            N8Block AttachmentPoint = (from N8Block b in LevelBlocks.BlocksByID.Values
+            N8Block AttachmentPoint = (from N8Block b in LevelBlocks.BlocksByID
                                        where b.name == "Attach Point"
                                        select b).First();
 

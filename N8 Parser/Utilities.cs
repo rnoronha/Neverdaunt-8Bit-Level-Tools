@@ -17,7 +17,7 @@ namespace N8Parser
 
         public static IEnumerable<N8Block> GetNotLands(N8Level Input)
         {
-            var NotLands = from N8Block b in Input.blocks.BlocksByID.Values where b.type != "landmega" select b;
+            var NotLands = from N8Block b in Input.blocks.BlocksByID where b.type != "landmega" select b;
             return NotLands;
         }
      

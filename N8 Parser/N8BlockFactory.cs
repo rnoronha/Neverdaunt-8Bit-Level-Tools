@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media.Media3D;
 using N8Parser.Tronics;
+using System.Collections;
 
 
 namespace N8Parser
@@ -11,8 +12,8 @@ namespace N8Parser
     [Serializable]
     public class N8BlockFactory
     {
-        public SortedDictionary<int, N8Block> BlocksByID;
-        public SortedDictionary<int, N8Tronic> TronicsByID;
+        public List<N8Block> BlocksByID;
+        public List<N8Tronic> TronicsByID;
         private int MaxID = 1;
         public bool GeneratedShrine = false;
         public int BlockCount = 0;
@@ -20,8 +21,8 @@ namespace N8Parser
 
         public N8BlockFactory() 
         {
-            BlocksByID = new SortedDictionary<int, N8Block>();
-            TronicsByID = new SortedDictionary<int, N8Tronic>();
+            BlocksByID = new List<N8Block>();
+            TronicsByID = new List<N8Tronic>();
         }
 
         public N8Block AddBlockFromSave(string raw)
@@ -30,7 +31,7 @@ namespace N8Parser
             string[] parts = raw.Split(':');
             N8Block current = new N8Block(parts);
 
-            BlocksByID.Add(current.ID, current);
+            BlocksByID.Add(current);
             MaxID = Math.Max(current.ID, MaxID);
             return current;
         }
@@ -41,7 +42,7 @@ namespace N8Parser
             string[] parts = raw.Split(':');
             N8Tronic current = new N8Tronic(parts);
 
-            TronicsByID.Add(current.ID, current);
+            TronicsByID.Add(current);
             MaxID = Math.Max(current.ID, MaxID);
             return current;
         }
@@ -52,7 +53,7 @@ namespace N8Parser
             {
                 GeneratedShrine = true;
                 N8Block temp = new N8Block(shrineID);
-                BlocksByID.Add(shrineID, temp);
+                BlocksByID.Add(temp);
                 return temp;
             }
             else
@@ -67,7 +68,7 @@ namespace N8Parser
             IncrementBlockCount();
             int NewID = GetNewID();
             N8Block temp = new N8Block(b, NewID);
-            BlocksByID.Add(NewID, temp);
+            BlocksByID.Add(temp);
             return temp;
         }
 
@@ -76,7 +77,7 @@ namespace N8Parser
             IncrementBlockCount();
             int NewID = GetNewID();
             N8Tronic temp = new N8Tronic(b, NewID);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
         }
 
@@ -85,7 +86,7 @@ namespace N8Parser
             IncrementBlockCount();
             int NewID = GetNewID();
             N8Block temp = new N8Block(NewID, type, name);
-            BlocksByID.Add(NewID, temp);
+            BlocksByID.Add(temp);
             return temp;
         }
 
@@ -94,7 +95,7 @@ namespace N8Parser
             IncrementBlockCount();
             int NewID = GetNewID();
             N8Tronic temp = new N8Tronic(NewID, type, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
         }
 
@@ -105,13 +106,74 @@ namespace N8Parser
 
         public bool GetBlock(int id, out N8Block result)
         {
-            bool inTronics = false;
-            bool inBlocks = BlocksByID.TryGetValue(id, out result);
-            if (!inBlocks)
+            bool inBlocks = false;
+
+            var blocks = from N8Block b in BlocksByID where b.ID == id select b;
+            result = null;
+
+            if (blocks.Count() > 1)
             {
-                N8Tronic temp;
-                inTronics = TronicsByID.TryGetValue(id, out temp);
-                result = temp;
+                throw new Exception("Block ID " + id + " is used by more than one block!");
+            }
+
+            if (blocks.Count() == 1)
+            {
+                inBlocks = true;
+                result = blocks.First();
+            }
+
+            return inBlocks;
+        }
+
+        public bool GetTronic(int id, out N8Tronic result)
+        {
+            result = null;
+            bool inTronics = false;
+            
+            var tronics = from N8Tronic t in TronicsByID where t.ID == id select t;
+
+            if (tronics.Count() > 1)
+            {
+                throw new Exception("Tronic ID " + id + " is used by more than one tronic!");
+            }
+            else if (tronics.Count() == 1)
+            {
+                inTronics = true;
+                result = tronics.First();
+            }
+
+            return inTronics;
+        }
+
+        public bool GetItem(int id, out N8Block result)
+        {
+            bool inTronics = false;
+            bool inBlocks = false;
+
+            var blocks = from N8Block b in BlocksByID where b.ID == id select b;
+            result = null;
+
+            if (blocks.Count() > 1)
+            {
+                throw new Exception("Block ID " + id + " is used by more than one block!");
+            }
+
+            if (blocks.Count() == 1)
+            {
+                inBlocks = true;
+                result = blocks.First();
+            }
+
+            var tronics = from N8Tronic t in TronicsByID where t.ID == id select t;
+
+            if (tronics.Count() > 1)
+            {
+                throw new Exception("Tronic ID " + id + " is used by more than one tronic!");
+            }
+            else if (tronics.Count() == 1)
+            {
+                inTronics = true;
+                result = tronics.First();
             }
 
             if (inBlocks && inTronics)
@@ -130,16 +192,28 @@ namespace N8Parser
 
         public bool IDInUse(int id)
         {
-            return this.BlocksByID.ContainsKey(id) || this.TronicsByID.ContainsKey(id);
+            var tronics = from N8Tronic t in TronicsByID where t.ID == id select t;
+            var blocks = from N8Block b in BlocksByID where b.ID == id select b;
+
+            if (blocks.Count() > 1)
+            {
+                throw new Exception("More than one block has ID " + id);
+            }
+            if (tronics.Count() > 1)
+            {
+                throw new Exception("More than one tronic has ID " + id);
+            }
+
+            return tronics.Count() == 1 || blocks.Count() == 1;
         }
 
         public static N8BlockFactory operator + (N8BlockFactory me, Vector3D offset)
         {
-            foreach(N8Block b in me.BlocksByID.Values)
+            foreach(N8Block b in me.BlocksByID)
             {
                 b.position += offset;
             }
-            foreach(N8Tronic t in me.TronicsByID.Values)
+            foreach(N8Tronic t in me.TronicsByID)
             {
                 t.position += offset;
             }
@@ -161,50 +235,30 @@ namespace N8Parser
                 return false;
             else
             {
-                if (this.BlocksByID.ContainsKey(block.ID))
-                {
-                    this.BlocksByID.Remove(block.ID);
-                }
-                else if (this.TronicsByID.ContainsKey(block.ID))
-                {
-                    this.TronicsByID.Remove(block.ID);
-                }
-
                 block.ChangeID(newID);
-
-                if (block is N8Tronic)
-                {
-                    this.TronicsByID.Add(newID, (N8Tronic)block);
-                }
-                else
-                {
-                    this.BlocksByID.Add(newID, block);
-                }
-
                 return true;
             }
         }
         
+        //This is still kind of broken, so don't trust it to re-id blocks properly, especially when they conflict with tronics.
         internal void CopyFromDestructive(N8BlockFactory copy)
         {
             //We're merging the other guy with us, so when it comes down to it it's his shit that needs to change
-            foreach (N8Block b in copy.BlocksByID.Values)
+            foreach (N8Block b in copy.BlocksByID)
             {
                 ChangeID(b);
             }
 
             //If a block and a tronic conflict, we'll change the block.
-            foreach (N8Tronic t in copy.TronicsByID.Values)
+            foreach (N8Tronic t in copy.TronicsByID)
             {
                 if (IDInUse(t.ID))
                 {
                     //Is it being used by a block?
-                    if (this.BlocksByID.ContainsKey(t.ID))
+                    N8Block conflictor;
+                    if (GetBlock(t.ID, out conflictor))
                     {
-                        N8Block conflictor;
                         //Then have him change, the lazy bastard
-                        this.BlocksByID.TryGetValue(t.ID, out conflictor);
-
                         ChangeID(conflictor);
                     }
                     else
@@ -217,15 +271,15 @@ namespace N8Parser
 
             if (TronicsByID.Count > 0 && BlocksByID.Count > 0)
             {
-                MaxID = Math.Max(TronicsByID.Keys.Max(), BlocksByID.Keys.Max());
+                MaxID = Math.Max(TronicsByID.Max((x) => x.ID), BlocksByID.Max((x) => x.ID));
             }
             else if (TronicsByID.Count > 0)
             {
-                MaxID = TronicsByID.Keys.Max();
+                MaxID = TronicsByID.Max((x) => x.ID);
             }
-            else if (BlocksByID.Keys.Count > 0)
+            else if (BlocksByID.Count > 0)
             {
-                MaxID = BlocksByID.Keys.Max();
+                MaxID = BlocksByID.Max((x) => x.ID);
             }
             else
             {
@@ -243,7 +297,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Add temp = new Add(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -252,7 +306,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Subtract temp = new Subtract(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -261,7 +315,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Multiply temp = new Multiply(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -270,7 +324,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Divide temp = new Divide(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -279,7 +333,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             And temp = new And(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -288,7 +342,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Rand temp = new Rand(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -297,7 +351,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Button temp = new Button(NewID, name, type);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -306,7 +360,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Proxy temp = new Proxy(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -315,7 +369,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Delay temp = new Delay(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -325,7 +379,7 @@ namespace N8Parser
             int NewID = GetNewID();
             Display temp = new Display(NewID, name);
             temp.data = DefaultMessage;
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
         }
 
@@ -333,7 +387,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Mover temp = new Mover(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -342,7 +396,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Rotor temp = new Rotor(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -351,7 +405,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Transmitter temp = new Transmitter(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -360,7 +414,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Reciever temp = new Reciever(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -369,7 +423,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Keyboard temp = new Keyboard(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -378,7 +432,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             IfEqual temp = new IfEqual(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -387,7 +441,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             IfGreater temp = new IfGreater(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -396,7 +450,7 @@ namespace N8Parser
         {
             int NewID = GetNewID();
             Distance temp = new Distance(NewID, name);
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
 
         }
@@ -406,7 +460,7 @@ namespace N8Parser
             int NewID = GetNewID();
             DataBlock temp = new DataBlock(NewID, name);
             temp.data = data;
-            TronicsByID.Add(NewID, temp);
+            TronicsByID.Add(temp);
             return temp;
         }
 

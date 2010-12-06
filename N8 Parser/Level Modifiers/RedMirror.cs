@@ -15,7 +15,7 @@ namespace N8Parser
 
             N8Level level = new N8Level(filename);
 
-            List<N8Block> blue_blocks = (from b in level.blocks.BlocksByID where b.Value.type.Contains("blue") select b.Value).ToList<N8Block>();
+            List<N8Block> blue_blocks = (from b in level.blocks.BlocksByID where b.type.Contains("blue") select b).ToList<N8Block>();
 
             foreach (N8Block b in blue_blocks)
             {
