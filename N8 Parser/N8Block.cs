@@ -30,6 +30,7 @@ namespace N8Parser
         public Vector3D position;
         public Quaternion rotation;
         public N8Block AttachedTo;
+        public int Special;
 
         public List<N8Block> Attachees;
 
@@ -48,6 +49,9 @@ namespace N8Parser
 
             double[] quat_parts = (from s in pieces[4].Split(',') select double.Parse(s)).ToArray();
             rotation = new Quaternion(quat_parts[1], quat_parts[3], quat_parts[2], quat_parts[0]);
+
+            if(pieces.Length > 5)
+                int.TryParse(pieces[5], out Special);
         }
 
         public N8Block(int id, string type, string name)
@@ -94,9 +98,11 @@ namespace N8Parser
 
         public override string ToString()
         {
+            string SanName = Utilities.Sanitize(name);
             //Apparently the N8 server dislikes doubles, so cast all these suckers to floats before outputting
-            string ret = _id + ":" + type + ":" + name + ":" + (float)position.X + "," + (float)position.Z + "," + (float)position.Y
-                            + ":" + (float)rotation.W + "," + (float)rotation.X + "," + (float)rotation.Z + "," + (float)rotation.Y;
+            string ret = _id + ":" + type + ":" + SanName + ":" + (float)position.X + "," + (float)position.Z + "," + (float)position.Y
+                            + ":" + (float)rotation.W + "," + (float)rotation.X + "," + (float)rotation.Z + "," + (float)rotation.Y
+                            + ":" + Special;
             return ret;
         }
 

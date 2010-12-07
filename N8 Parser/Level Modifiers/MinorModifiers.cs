@@ -10,12 +10,20 @@ namespace N8Parser.Level_Modifiers
     {
         public static N8Level TranslateLevel(N8Level Input, Vector3D Offset)
         {
-            var NotLands = Utilities.GetNotLands(Input);
+            //var NotLands = Utilities.GetNotLands(Input);
 
-            foreach (N8Block b in NotLands)
+            foreach (N8Block b in Input.blocks.BlocksByID)
             {
-                b.position += Offset;
+                if(b.AttachedTo == null)
+                    b.position += Offset;
             }
+
+            foreach (N8Tronic t in Input.blocks.TronicsByID)
+            {
+                if (t.AttachedTo == null)
+                    t.position += Offset;
+            }
+
             return Input;
         }
 

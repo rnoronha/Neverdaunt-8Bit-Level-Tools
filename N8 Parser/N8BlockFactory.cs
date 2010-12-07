@@ -268,6 +268,9 @@ namespace N8Parser
                 }
             }
 
+            //Finally, merge the two lists together.
+            this.BlocksByID.AddRange(copy.BlocksByID);
+            this.TronicsByID.AddRange(copy.TronicsByID);
 
             if (TronicsByID.Count > 0 && BlocksByID.Count > 0)
             {

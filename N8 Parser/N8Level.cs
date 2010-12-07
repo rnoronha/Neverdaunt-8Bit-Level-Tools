@@ -140,7 +140,7 @@ namespace N8Parser
 
             StringBuilder ret = new StringBuilder("");
 
-            foreach(N8Block block in blocks.BlocksByID)
+            foreach(N8Block block in blocks.BlocksByID.OrderBy((x)=>x.ID))
             {
                 if (!SeenIDs.Add(block.ID))
                 {
@@ -151,7 +151,7 @@ namespace N8Parser
 
             ret.AppendLine("tronics");
 
-            foreach (N8Block tronic in blocks.TronicsByID)
+            foreach (N8Block tronic in blocks.TronicsByID.OrderBy((x) => x.ID))
             {
                 if (!SeenIDs.Add(tronic.ID))
                 {

@@ -64,6 +64,17 @@ namespace N8Parser
         /// Creates a point in a spherical coordinate system.
         /// </summary>
         /// <param name="R">Distance from 0,0,0 to this point</param>
+        /// <param name="Theta">Elevation of this point, in degrees</param>
+        /// <param name="Phi">Distance around the sphere, in degrees</param>
+        public Spherical(double R, int Theta, int Phi)
+        {
+            coordinates = new Vector3D(R, Theta * Utilities.DegToRad, Phi * Utilities.DegToRad);
+        }
+
+        /// <summary>
+        /// Creates a point in a spherical coordinate system.
+        /// </summary>
+        /// <param name="R">Distance from 0,0,0 to this point</param>
         /// <param name="Theta">Elevation of this point, in radians</param>
         /// <param name="Phi">Distance around the sphere, in radians</param>
         public Spherical(double R, double Theta, double Phi)

@@ -15,6 +15,16 @@ namespace N8Parser
         public static double RadToDeg = 180 / Math.PI;
         public static double DegToRad = Math.PI / 180;
 
+        public static string ToData(this Vector3D me)
+        {
+            return "v" + me.X + "," + me.Z + "," + me.Y;
+        }
+
+        public static string ToData(this Quaternion me)
+        {
+            return "q" + me.W + "," + me.X + "," + me.Z + "," + me.Y;
+        }
+
         public static IEnumerable<N8Block> GetNotLands(N8Level Input)
         {
             var NotLands = from N8Block b in Input.blocks.BlocksByID where b.type != "landmega" select b;
@@ -92,7 +102,14 @@ namespace N8Parser
             return ret;
         }
 
-
+        /// <summary>
+        /// Generates a list of points representing a line, based on an initial point and a direction from that point
+        /// </summary>
+        /// <param name="from">The starting point</param>
+        /// <param name="direction">The direction of travel</param>
+        /// <param name="count">The number of steps to take</param>
+        /// <param name="BlockLength">The length of each step</param>
+        /// <returns>A tuple; first item is the list of points, the second item is one extra step in the direction.</returns>
         public static Tuple<List<Vector3D>, Vector3D> GenerateLine(Vector3D from, Spherical direction, int count, double BlockLength)
         {
             List<Vector3D> points = new List<Vector3D>();
@@ -546,5 +563,13 @@ namespace N8Parser
 
 
 
+
+        public static string Sanitize(string data)
+        {
+            string SanitizedData = data;
+            SanitizedData = SanitizedData.Replace(":", "\b");
+            SanitizedData = SanitizedData.Replace("\n", "/n ");
+            return SanitizedData;
+        }
     }
 }

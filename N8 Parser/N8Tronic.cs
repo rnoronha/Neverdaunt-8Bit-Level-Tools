@@ -45,11 +45,10 @@ namespace N8Parser
 
         public override string ToString()
         {
-            string SanitizedData = data;
-            SanitizedData = SanitizedData.Replace(":", "\b");
-            SanitizedData = SanitizedData.Replace("\n", "/n ");
+            string SanitizedData = Utilities.Sanitize(data);
             
-            return base.ToString() + ":" + SanitizedData + ":";
+            return this.ID + ":" + type + ":" + name + ":" + (float)position.X + "," + (float)position.Z + "," + (float)position.Y
+                            + ":" + (float)rotation.W + "," + (float)rotation.X + "," + (float)rotation.Z + "," + (float)rotation.Y + ":" + SanitizedData + ":";
         }
 
         public void CheckWiringCompat(Wire w)

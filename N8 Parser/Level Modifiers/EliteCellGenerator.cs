@@ -15,7 +15,8 @@ namespace N8Parser.Level_Modifiers
             N8Level Cell = new N8Level();
 
             Random rand = new Random(10);
-            List<Tuple<Vector3D, Quaternion>> blocks = Utilities.GenerateSphere(new Vector3D(0, 0, 1000), 500, 50);
+            Vector3D Center = new Vector3D(0, 0, 1000);
+            List<Tuple<Vector3D, Quaternion>> blocks = Utilities.GenerateSphere(Center, 500, 48).OrderBy((x) => x.Item1.Z).ToList();
 
             string[] colors = { "blue", "green", "orange", "purple", "red", "black"};
 
@@ -23,13 +24,15 @@ namespace N8Parser.Level_Modifiers
 
             TronicSequence ts = TronicSequence.StartFromButton(Cell.blocks);
             ts.GetFirst().position.Z = 100;
+            ts.GetFirst().position.Y = -1800;
 
             List<Tuple<N8Block, DataBlock, DataBlock>> BlockAndData = new List<Tuple<N8Block, DataBlock, DataBlock>>(blocks.Count);
+            
 
             for(int i = 0; i < blocks.Count; i++)
             {
-                //string color = colors[i%colors.Length];
-                string color = "black";
+                string color = colors[i%colors.Length];
+                //string color = "black";
                 Tuple<Vector3D, Quaternion> PosAndRot = blocks[i];
                 N8Block CurrentBlock = Cell.blocks.GenerateBlock("simple." + color + ".land.mega", "temp");
                 CurrentBlock.name = CurrentBlock.ID + "";//names[rand.Next(names.Length)];
@@ -66,6 +69,29 @@ namespace N8Parser.Level_Modifiers
                 CurrentBlock.AttachToMe(RotorData);
 
                 BlockAndData.Add(Tuple.Create(CurrentBlock, MoverData, RotorData));
+            }
+
+            int RotationStepDegrees = 30;
+            int NumRotationSteps = 360/RotationStepDegrees;
+
+            int BlocksPerStep = BlockAndData.Count / NumRotationSteps;
+            Spherical Rotation = new Spherical(0, 125, 0);
+            Quaternion InitialRotation = new Quaternion(new Vector3D(0, 1, 0), 90);
+            for (int i = 0; i < NumRotationSteps; i++)
+            {
+                Rotation.Phi = i * RotationStepDegrees * Utilities.DegToRad;
+                var Line = Utilities.GenerateLine(Center, Rotation, BlocksPerStep, 400);
+                for (int j = 0; j < BlocksPerStep; j++)
+                {
+                    int index = i * BlocksPerStep + j;
+                    BlockAndData[index].Item1.name = "Line: " + i + " Block: " + j;
+                    Vector3D RealVector = new Vector3D();
+                    RealVector.X = Math.Round(Line.Item1[j].X + j);
+                    RealVector.Y = Math.Round(Line.Item1[j].Y + j);
+                    RealVector.Z = Math.Round(Line.Item1[j].Z);
+                    BlockAndData[index].Item2.data = RealVector.ToData();
+                    BlockAndData[index].Item3.data = (InitialRotation * Rotation.GetNormalRotation()).ToData();
+                }
             }
 
             Utilities.MergeWithDefault(Cell);

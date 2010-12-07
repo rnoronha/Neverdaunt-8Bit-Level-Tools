@@ -13,16 +13,10 @@ namespace N8Parser
         static void Main(string[] args)
         {
             /*
-            N8Level N8Star = new N8Level(@"C:\Program Files (x86)\N8\Saves\n8star.ncd");
-
-            //N8Star = MinorModifiers.TranslateLevel(N8Star, new Vector3D(0, -95, 0));
-            N8Block CP = N8Star.blocks.GenerateBlock("pixelgreen", "Control Point");
-            CP.position = new Vector3D(0,0,-200);
-
-            N8Star = MinorModifiers.AttachLevel(N8Star, CP);
-            N8Star = MinorModifiers.OrderLoadingY(N8Star, true);
-
-            Utilities.Save(@"C:\Program Files (x86)\N8\Saves\moved_n8star.ncd", N8Star);
+            N8Level Planetarium = new N8Level(@"C:\Program Files (x86)\N8\Saves\stars_mega.ncd");
+            MinorModifiers.TranslateLevel(Planetarium, new Vector3D(-200, 0, 0));
+            MinorModifiers.OrderLoadingZ(Planetarium, false);
+            Utilities.Save(@"C:\Program Files (x86)\N8\Saves\moved_stars_mega.ncd", Planetarium);
             */
 
             EliteCellGenerator.GenerateLevel();
