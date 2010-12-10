@@ -11,12 +11,8 @@ namespace N8Parser.Level_Modifiers
 {
     public static class Chibifier
     {
-
-        public static Vector3D scale(Vector3D v, int xOffset, int yOffset)
+        public static Vector3D translate(Vector3D v, int xOffset, int yOffset)
         {
-            //Scaling ratio between chibi and normal blocks is 1/5th
-            v /= 5;
-
             //Megalands are 800x800
             v.X += xOffset * 800;
             v.Y += yOffset * 800;
@@ -24,6 +20,14 @@ namespace N8Parser.Level_Modifiers
             //Magic number! This is 4/5ths of 70, we add it so that the ground plane of the chibi area is the same height
             //as the ground plane of the non-chibi area.
             v.Z += 56;
+
+            return v;
+        }
+
+        public static Vector3D scale(Vector3D v)
+        {
+            //Scaling ratio between chibi and normal blocks is 1/5th
+            v /= 5;
 
             return v;
         }
@@ -39,7 +43,16 @@ namespace N8Parser.Level_Modifiers
             N8Level Level = new N8Level(SavePath);
             foreach (N8Block b in Level.blocks.BlocksByID)
             {
-                b.position = scale(b.position, xLocation, yLocation);
+                //Everything gets scaled down
+                b.position = scale(b.position);
+
+                //But only blocks which are not attached to something need to be translated
+                //(for the ones that are attached to something, the translation will be handled
+                //by the block they're attached to)
+                if (b.AttachedTo == null)
+                {
+                    b.position = translate(b.position, xLocation, yLocation);
+                }
                 b.Special = 2;
             }
 
@@ -47,11 +60,11 @@ namespace N8Parser.Level_Modifiers
             
             foreach (N8Tronic t in Level.blocks.TronicsByID)
             {
-                t.position = scale(t.position, xLocation, yLocation);
+                t.position = translate(scale(t.position), xLocation, yLocation);
                 //Dump all tronics down at the bottom of the level, because they don't scale physically. Of course, we shouldn't do this with displays.
                 if (t.type != "tdisplay")
                 {
-                    t.position.Z = -500;
+                    t.position.Z = -1000;
                 }
 
                 if (t.type == "troter")
@@ -67,7 +80,7 @@ namespace N8Parser.Level_Modifiers
                     if (t.IsVector())
                     {
                         Vector3D contents = t.DataToVector();
-                        contents = scale(contents, xLocation, yLocation);
+                        contents = translate(scale(contents), xLocation, yLocation);
                         t.data = contents.ToData();
                     }
                 }
