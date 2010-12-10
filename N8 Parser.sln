@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N8 Parser", "N8 Parser\N8 Parser.csproj", "{1B79F6BA-E6D5-4926-88E5-95FC79D69564}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelChibifier", "LevelChibifier\LevelChibifier.csproj", "{727001D2-0232-4368-8B6F-6DF5945C967B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{8A2C9918-6AAC-4721-B0B6-AA199D50816C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +17,14 @@ Global
 		{1B79F6BA-E6D5-4926-88E5-95FC79D69564}.Debug|x86.Build.0 = Debug|x86
 		{1B79F6BA-E6D5-4926-88E5-95FC79D69564}.Release|x86.ActiveCfg = Release|x86
 		{1B79F6BA-E6D5-4926-88E5-95FC79D69564}.Release|x86.Build.0 = Release|x86
+		{727001D2-0232-4368-8B6F-6DF5945C967B}.Debug|x86.ActiveCfg = Debug|x86
+		{727001D2-0232-4368-8B6F-6DF5945C967B}.Debug|x86.Build.0 = Debug|x86
+		{727001D2-0232-4368-8B6F-6DF5945C967B}.Release|x86.ActiveCfg = Release|x86
+		{727001D2-0232-4368-8B6F-6DF5945C967B}.Release|x86.Build.0 = Release|x86
+		{8A2C9918-6AAC-4721-B0B6-AA199D50816C}.Debug|x86.ActiveCfg = Debug|x86
+		{8A2C9918-6AAC-4721-B0B6-AA199D50816C}.Debug|x86.Build.0 = Debug|x86
+		{8A2C9918-6AAC-4721-B0B6-AA199D50816C}.Release|x86.ActiveCfg = Release|x86
+		{8A2C9918-6AAC-4721-B0B6-AA199D50816C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
 using N8Parser.Level_Modifiers;
-using System.Windows.Media.Media3D;
 
-namespace N8Parser
+namespace Testing
 {
     class Program
     {

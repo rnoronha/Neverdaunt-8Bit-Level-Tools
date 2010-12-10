@@ -7,7 +7,7 @@ using N8Parser.Tronics;
 
 namespace N8Parser
 {
-    class N8Level
+    public class N8Level
     {
         public N8BlockFactory blocks;
 

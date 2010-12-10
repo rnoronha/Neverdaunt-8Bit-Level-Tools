@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1B79F6BA-E6D5-4926-88E5-95FC79D69564}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{8A2C9918-6AAC-4721-B0B6-AA199D50816C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>N8Parser</RootNamespace>
-    <AssemblyName>N8 Parser</AssemblyName>
+    <RootNamespace>Testing</RootNamespace>
+    <AssemblyName>Testing</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -33,11 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,41 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Geometry\Cylindrical.cs" />
-    <Compile Include="Geometry\SidewaysCylindrical.cs" />
-    <Compile Include="Level Modifiers\AddMoon.cs" />
-    <Compile Include="Level Modifiers\Chibifier.cs" />
-    <Compile Include="Level Modifiers\DeIsland.cs" />
-    <Compile Include="Level Modifiers\EliteCellGenerator.cs" />
-    <Compile Include="Level Modifiers\Flies.cs" />
-    <Compile Include="Level Modifiers\GeometriesTest.cs" />
-    <Compile Include="Level Modifiers\MazeGenerator.cs" />
-    <Compile Include="Level Modifiers\SCIENCE.cs" />
-    <Compile Include="Level Modifiers\ShiftSave.cs" />
-    <Compile Include="Level Modifiers\Tetrahedron.cs" />
-    <Compile Include="Level Modifiers\TileFloor.cs" />
-    <Compile Include="Level Modifiers\Eyestrain.cs" />
-    <Compile Include="Level Modifiers\GenerateStack.cs" />
-    <Compile Include="Level Modifiers\MaxProtectTest.cs" />
-    <Compile Include="Level Modifiers\RotateSave.cs" />
-    <Compile Include="Level Modifiers\MinorModifiers.cs" />
-    <Compile Include="Level Modifiers\TronicsTesting.cs" />
-    <Compile Include="N8Block.cs" />
-    <Compile Include="N8BlockFactory.cs" />
-    <Compile Include="Level_Parse_Test.cs" />
-    <Compile Include="N8Level.cs" />
-    <Compile Include="N8Tronic.cs" />
-    <Compile Include="Geometry\Plane.cs" />
-    <Compile Include="Level Modifiers\Planetarium.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Level Modifiers\RedMirror.cs" />
-    <Compile Include="Geometry\Spherical.cs" />
-    <Compile Include="Tronics\DataNode.cs" />
-    <Compile Include="Tronics\TronicSequence.cs" />
-    <Compile Include="Tronics\FlowTronics.cs" />
-    <Compile Include="Tronics\Node.cs" />
-    <Compile Include="Utilities.cs" />
-    <Compile Include="Wire.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\N8 Parser\N8 Parser.csproj">
+      <Project>{1B79F6BA-E6D5-4926-88E5-95FC79D69564}</Project>
+      <Name>N8 Parser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

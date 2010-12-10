@@ -26,9 +26,6 @@ namespace N8Parser.Level_Modifiers
             N8BlockFactory LevelBlocks = Level.blocks;
 
             Random rand = new Random();
-            int MaxRadius = 500;
-            double RadToDeg = 180 / Math.PI;
-            Quaternion InitialRotation = new Quaternion();
 
             /*
             bool done = false;

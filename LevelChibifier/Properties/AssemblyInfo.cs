@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("N8 Level Tools")]
+[assembly: AssemblyTitle("LevelChibifier")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("N8 Level Tools")]
+[assembly: AssemblyProduct("LevelChibifier")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a66b99a2-e782-4ba0-8fe8-755d1675da9b")]
+[assembly: Guid("cb7cd773-313e-4b2a-86ed-811b8438a24a")]
 
 // Version information for an assembly consists of the following four values:
 //

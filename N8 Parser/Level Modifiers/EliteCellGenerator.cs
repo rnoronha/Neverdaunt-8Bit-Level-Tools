@@ -16,7 +16,7 @@ namespace N8Parser.Level_Modifiers
 
             Random rand = new Random(10);
             Vector3D Center = new Vector3D(0, 0, 1000);
-            List<Tuple<Vector3D, Quaternion>> blocks = Utilities.GenerateSphere(Center, 500, 48).OrderBy((x) => x.Item1.Z).ToList();
+            List<Tuple<Vector3D, Quaternion>> blocks = Utilities.GenerateSphere(Center, 500, 48).OrderBy((x) => x.Item1.Z).ThenBy((x) => x.Item1.X).ThenBy((x) => x.Item1.Y).ToList();
 
             string[] colors = { "blue", "green", "orange", "purple", "red", "black"};
 
@@ -39,8 +39,8 @@ namespace N8Parser.Level_Modifiers
                 CurrentBlock.position = PosAndRot.Item1;
                 CurrentBlock.rotation = PosAndRot.Item2;
 
-                DataBlock MoverData = ts.NewDataBlock();
-                DataBlock RotorData = ts.NewDataBlock();
+                DataBlock MoverData = ts.NewDataBlock("data", CurrentBlock.position.ToData());
+                DataBlock RotorData = ts.NewDataBlock("data", CurrentBlock.rotation.ToData());
                 RotorData.position.Z = -35;
                 RotorData.position.Y = 50;
 
@@ -75,12 +75,14 @@ namespace N8Parser.Level_Modifiers
             int NumRotationSteps = 360/RotationStepDegrees;
 
             int BlocksPerStep = BlockAndData.Count / NumRotationSteps;
-            Spherical Rotation = new Spherical(0, 125, 0);
+            Spherical Rotation = new Spherical(0, 102, 0);
             Quaternion InitialRotation = new Quaternion(new Vector3D(0, 1, 0), 90);
-            for (int i = 0; i < NumRotationSteps; i++)
+            for (int i = 0; i < NumRotationSteps/4; i++)
             {
-                Rotation.Phi = i * RotationStepDegrees * Utilities.DegToRad;
-                var Line = Utilities.GenerateLine(Center, Rotation, BlocksPerStep, 400);
+                Rotation.Phi = (-45 + i * RotationStepDegrees) * Utilities.DegToRad;
+                Vector3D PlatformBegin = Center;
+                PlatformBegin.Z -= 650;
+                var Line = Utilities.GenerateLine(PlatformBegin, Rotation, BlocksPerStep, 400);
                 for (int j = 0; j < BlocksPerStep; j++)
                 {
                     int index = i * BlocksPerStep + j;
@@ -96,6 +98,13 @@ namespace N8Parser.Level_Modifiers
 
             Utilities.MergeWithDefault(Cell);
             Utilities.Save(SavePath, Cell);
+            
+        }
+
+        private static double QuadrantSort(Tuple<Vector3D, Quaternion> x)
+        {
+            Vector3D v = x.Item1;
+            return v.Z;
             
         }
     }
