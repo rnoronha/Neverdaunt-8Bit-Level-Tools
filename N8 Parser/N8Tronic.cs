@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using N8Parser.Tronics;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Media3D;
 
 namespace N8Parser
 {
@@ -16,7 +17,31 @@ namespace N8Parser
         //note that while all tronics have a data segment in the save file, only display and data block tronics ever seem to actually use it.
         public string data = "";
 
-        
+
+        //These guys need to be moved into DataBlock
+        private Regex VectorRegex = new Regex(@"^v(-?\d+),(-?\d+),(-?\d+)$");
+        public bool IsVector()
+        {
+            Match m = VectorRegex.Match(data);
+            return m.Success;
+        }
+
+        public Vector3D DataToVector()
+        {
+            Vector3D ret;
+            Match m = VectorRegex.Match(data);
+            if (m.Success)
+            {
+                ret = new Vector3D(double.Parse(m.Groups[1].Value), double.Parse(m.Groups[2].Value), double.Parse(m.Groups[3].Value));
+            }
+            else
+            {
+                throw new Exception("Data is not a vector!");
+            }
+
+            return ret;
+        }
+
         public N8Tronic(string[] parts)
             : base(parts)
         {

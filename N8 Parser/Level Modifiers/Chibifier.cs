@@ -4,25 +4,28 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
+using N8Parser.Tronics;
+using System.Windows.Media.Media3D;
 
 namespace N8Parser.Level_Modifiers
 {
     public static class Chibifier
     {
 
-        public static void scale(N8Block b, int xOffset, int yOffset)
+        public static Vector3D scale(Vector3D v, int xOffset, int yOffset)
         {
             //Scaling ratio between chibi and normal blocks is 1/5th
-            b.position /= 5;
+            v /= 5;
 
             //Megalands are 800x800
-            b.position.X += xOffset * 800;
-            b.position.Y += yOffset * 800;
+            v.X += xOffset * 800;
+            v.Y += yOffset * 800;
 
             //Magic number! This is 4/5ths of 70, we add it so that the ground plane of the chibi area is the same height
             //as the ground plane of the non-chibi area.
-            b.position.Z += 56;
-            b.Special = 2;
+            v.Z += 56;
+
+            return v;
         }
         /// <summary>
         /// Chibifies a level. Currently does not handle tronics. 
@@ -36,23 +39,36 @@ namespace N8Parser.Level_Modifiers
             N8Level Level = new N8Level(SavePath);
             foreach (N8Block b in Level.blocks.BlocksByID)
             {
-                scale(b, xLocation, yLocation);
+                b.position = scale(b.position, xLocation, yLocation);
+                b.Special = 2;
             }
 
             //In tronics, we also need to scale the vectors in data blocks
-            Regex IsVector = new Regex(@"^v(-?\d+),(-?\d+),(-?\d+)$");
+            
             foreach (N8Tronic t in Level.blocks.TronicsByID)
             {
-                scale(t, xLocation, yLocation);
-                //Dump all tronics down at the bottom of the level, because they don't scale physically
-                t.position.Z = -500;
+                t.position = scale(t.position, xLocation, yLocation);
+                //Dump all tronics down at the bottom of the level, because they don't scale physically. Of course, we shouldn't do this with displays.
+                if (t.type != "tdisplay")
+                {
+                    t.position.Z = -500;
+                }
+
+                if (t.type == "troter")
+                {
+                    if(t.AttachedTo != null)
+                    {
+                        t.position = t.AttachedTo.position;
+                    }
+                }
+                
                 if (t.type == "cdata")
                 {
-                    Match m = IsVector.Match(t.data);
-                    if (m.Success)
+                    if (t.IsVector())
                     {
-                        string NewData = "v" + (double.Parse(m.Groups[1].Value) / 5) + "," + (double.Parse(m.Groups[2].Value) / 5) + "," + (double.Parse(m.Groups[3].Value) / 5);
-                        t.data = NewData;
+                        Vector3D contents = t.DataToVector();
+                        contents = scale(contents, xLocation, yLocation);
+                        t.data = contents.ToData();
                     }
                 }
             }

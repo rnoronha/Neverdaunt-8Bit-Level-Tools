@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Media3D;
+using System.Text.RegularExpressions;
 
 namespace N8Parser.Tronics
 {
@@ -31,6 +33,8 @@ namespace N8Parser.Tronics
             _in = new DataNodeIn(this);
             _out = new DataNodeOut(this);
         }
+
+
     }
     //The innness or outness of a data node is relative to the tronic, not the node.
     public class DataNodeIn

@@ -40,6 +40,7 @@ namespace N8Parser
         {
             IncrementBlockCount();
             string[] parts = raw.Split(':');
+
             N8Tronic current = new N8Tronic(parts);
 
             TronicsByID.Add(current);
