@@ -11,21 +11,54 @@ namespace N8Parser.Geometry
     /// </summary>
     public class Cylindrical
     {
+        private static Vector3D DefaultAxis = new Vector3D(0,0,1);
         Vector3D coordinates;
+        Vector3D axis;
 
         public Cylindrical()
         {
             coordinates = new Vector3D();
+            axis = new Vector3D(0, 0, 1);
         }
 
         /// <summary>
-        /// Creates a point in a cylindrical coordinate system.
+        /// Creates a point in a cylindrical coordinate system with the default axis of 0,0,1
         /// </summary>
         /// <param name="R">Planar radius from 0,0,z to this point</param>
         /// <param name="Theta">Planar angle to this point, in radians</param>
         /// <param name="Z">Height of this point</param>
         public Cylindrical(double R, double Theta, double Z)
         {
+            axis = new Vector3D(0, 0, 1);
+            coordinates = new Vector3D(R, Theta, Z);
+        }
+
+        /// <summary>
+        /// Creates a cylindrical representation of a point represented by Cartesian coordinates with the default axis of 0,0,1.
+        /// </summary>
+        /// <param name="Cartesian">The Cartesian coordinates to convert</param>
+        public Cylindrical(Vector3D Cartesian)
+        {
+            /*
+            double r = Math.Sqrt(Math.Pow(Cartesian.X, 2) + Math.Pow(Cartesian.Y, 2));
+            double theta = Math.Atan2(Cartesian.Y, Cartesian.X);
+            double z = Cartesian.Z;
+            */
+            axis = new Vector3D(0, 0, 1);
+
+            coordinates = FromCartesian(Cartesian);
+        }
+
+        /// <summary>
+        /// Creates a point in a cylindrical coordinate system.
+        /// </summary>
+        /// <param name="R">Planar radius from h * Axis to this point</param>
+        /// <param name="Theta">Planar angle to this point, in radians</param>
+        /// <param name="Z">Height of this point</param>
+        /// <param name="Axis">The axis along which this cylinder runs</param>
+        public Cylindrical(double R, double Theta, double Z, Vector3D Axis)
+        {
+            axis = Axis;
             coordinates = new Vector3D(R, Theta, Z);
         }
 
@@ -33,13 +66,35 @@ namespace N8Parser.Geometry
         /// Creates a cylindrical representation of a point represented by Cartesian coordinates.
         /// </summary>
         /// <param name="Cartesian">The Cartesian coordinates to convert</param>
-        public Cylindrical(Vector3D Cartesian)
+        /// <param name="Axis">The axis along which this cylinder will run</param>
+        public Cylindrical(Vector3D Cartesian, Vector3D Axis)
         {
             double r = Math.Sqrt(Math.Pow(Cartesian.X, 2) + Math.Pow(Cartesian.Y, 2));
             double theta = Math.Atan2(Cartesian.Y, Cartesian.X);
             double z = Cartesian.Z;
 
-            coordinates = new Vector3D(r, theta, z);
+            axis = Axis;
+            coordinates = FromCartesian(Cartesian);
+            Console.WriteLine("Cartesian to Cylinder: " + Cartesian + " -> " + coordinates);
+        }
+
+        //From http://www.euclideanspace.com/maths/geometry/space/coordinates/polar/cylindrical/index.htm
+        private Vector3D FromCartesian(Vector3D Cartesian)
+        {
+            double r;
+            double theta;
+            double h;
+            double ax_z_sq = axis.Z * axis.Z;
+            double ax_x_sq = axis.X * axis.X;
+            double ax_y_sq = axis.Y * axis.Y;
+            double ax_y_z_part = (Cartesian.X * Math.Sqrt(ax_z_sq + ax_y_sq) - axis.X * Cartesian.Z);
+            double ax_x_z_part = (Cartesian.Y * Math.Sqrt(ax_z_sq + ax_x_sq) - axis.Y * Cartesian.Z);
+
+            r = Math.Sqrt(ax_x_z_part * ax_x_z_part + ax_y_z_part * ax_y_z_part);
+            theta = Math.Atan2(ax_y_z_part, ax_x_z_part);
+            h = Cartesian.Z;
+
+            return new Vector3D(r, theta, h);
         }
 
         /// <summary>
@@ -49,12 +104,19 @@ namespace N8Parser.Geometry
         public Vector3D ToCartesian()
         {
             Vector3D result;
-
+            /*
             double x = R * Math.Cos(Theta);
             double y = R * Math.Sin(Theta);
-            double z = Z;
+            double z = H;
+            */
+
+            double x = Math.Sqrt(axis.Z * axis.Z + axis.Y * axis.Y) * R * Math.Sin(Theta) + H * axis.X;
+            double y = Math.Sqrt(axis.Z * axis.Z + axis.X * axis.X) * R * Math.Cos(Theta) + H * axis.Y;
+            double z = -axis.X * R * Math.Sin(Theta) - axis.Y * R * Math.Cos(Theta) + H * axis.Z;
 
             result = new Vector3D(x, y, z);
+
+            Console.WriteLine("Cylinder to Cartesian: " + coordinates + " -> " + result + "\n");
 
             return result;
         }
@@ -85,7 +147,7 @@ namespace N8Parser.Geometry
             }
         }
 
-        public double Z
+        public double H
         {
             get
             {

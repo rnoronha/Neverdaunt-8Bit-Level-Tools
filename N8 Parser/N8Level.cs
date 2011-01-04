@@ -140,7 +140,7 @@ namespace N8Parser
 
             StringBuilder ret = new StringBuilder("");
 
-            foreach(N8Block block in blocks.BlocksByID.OrderBy((x)=>x.ID))
+            foreach(N8Block block in blocks.Blocks)
             {
                 if (!SeenIDs.Add(block.ID))
                 {
@@ -151,7 +151,7 @@ namespace N8Parser
 
             ret.AppendLine("tronics");
 
-            foreach (N8Block tronic in blocks.TronicsByID.OrderBy((x) => x.ID))
+            foreach (N8Block tronic in blocks.Tronics)
             {
                 if (!SeenIDs.Add(tronic.ID))
                 {
@@ -164,7 +164,7 @@ namespace N8Parser
 
             //Note: nothing can attach to a tronic, so I'm not going through them.
             //If this ever gets updated, consider concatenating BlocksByID and TronicsByID.
-            foreach (N8Block block in blocks.BlocksByID)
+            foreach (N8Block block in blocks.Blocks)
             {
                 if (block.Attachees != null)
                 {
@@ -184,7 +184,7 @@ namespace N8Parser
             SortedSet<Wire> wiring = new SortedSet<Wire>();
                     
 
-            foreach (N8Tronic tronic in blocks.TronicsByID)
+            foreach (N8Tronic tronic in blocks.Tronics)
             {
                 if (tronic.WiredTo != null)
                 {

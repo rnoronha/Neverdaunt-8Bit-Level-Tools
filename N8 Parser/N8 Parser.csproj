@@ -48,9 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Geometry\Cylindrical.cs" />
-    <Compile Include="Geometry\SidewaysCylindrical.cs" />
     <Compile Include="Level Modifiers\AddMoon.cs" />
     <Compile Include="Level Modifiers\Chibifier.cs" />
+    <Compile Include="Level Modifiers\Crazy.cs" />
     <Compile Include="Level Modifiers\DeIsland.cs" />
     <Compile Include="Level Modifiers\EliteCellGenerator.cs" />
     <Compile Include="Level Modifiers\Flies.cs" />
@@ -63,7 +63,6 @@
     <Compile Include="Level Modifiers\Eyestrain.cs" />
     <Compile Include="Level Modifiers\GenerateStack.cs" />
     <Compile Include="Level Modifiers\MaxProtectTest.cs" />
-    <Compile Include="Level Modifiers\RotateSave.cs" />
     <Compile Include="Level Modifiers\MinorModifiers.cs" />
     <Compile Include="Level Modifiers\TronicsTesting.cs" />
     <Compile Include="N8Block.cs" />

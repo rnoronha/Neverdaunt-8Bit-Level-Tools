@@ -28,7 +28,7 @@ namespace N8Parser.Level_Modifiers
             }
 
             string SavePath = Path.GetDirectoryName(LoadPath) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(LoadPath) + "_moon.ncd";
-            MinorModifiers.OrderLoadingZ(Level, true);
+            MinorModifiers.OrderLoading(Level, new Vector3D(0,0,1));
             Utilities.Save(SavePath, Level);
         }
     }

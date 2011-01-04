@@ -32,7 +32,7 @@ namespace N8Parser.Level_Modifiers
             return v;
         }
         /// <summary>
-        /// Chibifies a level. Currently does not handle tronics. 
+        /// Chibifies a level.
         /// </summary>
         /// <param name="SavePath">The level save to load</param>
         /// <param name="xLocation">Which megaland to replace, in X. Valid values are (-2,2)</param>
@@ -41,14 +41,14 @@ namespace N8Parser.Level_Modifiers
         public static N8Level GetChibifiedLevel(string SavePath, int xLocation, int yLocation)
         {
             N8Level Level = new N8Level(SavePath);
-            foreach (N8Block b in Level.blocks.BlocksByID)
+            foreach (N8Block b in Level.blocks.Blocks)
             {
                 //Everything gets scaled down
                 b.position = scale(b.position);
 
                 //But only blocks which are not attached to something need to be translated
                 //(for the ones that are attached to something, the translation will be handled
-                //by the block they're attached to)
+                //by the block they're attached t)o
                 if (b.AttachedTo == null)
                 {
                     b.position = translate(b.position, xLocation, yLocation);
@@ -58,10 +58,10 @@ namespace N8Parser.Level_Modifiers
 
             //In tronics, we also need to scale the vectors in data blocks
             
-            foreach (N8Tronic t in Level.blocks.TronicsByID)
+            foreach (N8Tronic t in Level.blocks.Tronics)
             {
                 t.position = translate(scale(t.position), xLocation, yLocation);
-                //Dump all tronics down at the bottom of the level, because they don't scale physically. Of course, we shouldn't do this with displays.
+                //Dump all tronics down at the bottom of the level, because they don't scale physically. Of course, we shouldn't do this with displays, keyboards or buttons
                 if (t.type != "tdisplay")
                 {
                     t.position.Z = -1000;
@@ -106,7 +106,7 @@ namespace N8Parser.Level_Modifiers
                 }
             }
 
-            Level = MinorModifiers.OrderLoadingZ(Level, false);
+            Level = MinorModifiers.OrderLoading(Level, new Vector3D(0,0,-1));
 
             return Level;
 

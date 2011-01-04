@@ -494,7 +494,7 @@ namespace N8Parser
 
         public void AttachAllTo(N8Block which, bool absolute)
         {
-            foreach (N8Tronic t in tronics.TronicsByID)
+            foreach (N8Tronic t in tronics.Tronics)
             {
                 if (absolute)
                 {
@@ -555,7 +555,7 @@ namespace N8Parser
             int ymin = -YSize / 2;
             int ymax = YSize / 2;
 
-            foreach (N8Tronic t in tronics.TronicsByID)
+            foreach (N8Tronic t in tronics.Tronics)
             {
                 int yOffset = rand.Next(ymin, ymax);
                 int xOffset = rand.Next(xmin, xmax);

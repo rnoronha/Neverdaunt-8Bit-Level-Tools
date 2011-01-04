@@ -9,7 +9,7 @@ using N8Parser.Geometry;
 
 namespace N8Parser
 {
-    static class Utilities
+    public static class Utilities
     {
 
         public static double RadToDeg = 180 / Math.PI;
@@ -27,7 +27,7 @@ namespace N8Parser
 
         public static IEnumerable<N8Block> GetNotLands(N8Level Input)
         {
-            var NotLands = from N8Block b in Input.blocks.BlocksByID where b.type != "landmega" select b;
+            var NotLands = from N8Block b in Input.blocks.Blocks where b.type != "landmega" select b;
             return NotLands;
         }
      
@@ -362,7 +362,7 @@ namespace N8Parser
 
                 List<Tuple<Vector3D, Quaternion>> ThisSlice =
                     (from Tuple<Vector3D, Quaternion> t in EvenCircle(new Vector3D(0, 0, z), BlockWidth, circle_radius, NextOffset)
-                    select Tuple.Create(t.Item1 + Around, new Quaternion(new Vector3D(0, 1, 0), -coords.Phi * RadToDeg) * t.Item2)).ToList();
+                    select Tuple.Create(t.Item1 + Around, new Spherical(t.Item1).GetNormalRotation())).ToList();
 
 
                 if (circle_radius != 0)
@@ -560,9 +560,6 @@ namespace N8Parser
             N8Level DefaultGround = new N8Level(DefaultPath);
             toMerge.MergeWithDestructive(DefaultGround);
         }
-
-
-
 
         public static string Sanitize(string data)
         {

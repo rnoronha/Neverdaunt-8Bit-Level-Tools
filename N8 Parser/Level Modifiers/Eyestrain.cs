@@ -7,12 +7,11 @@ using System.Windows.Media.Media3D;
 
 namespace N8Parser.Level_Modifiers
 {
-    class Eyestrain
+    public class Eyestrain
     {
         public static void GenerateLevel()
         {
             string SavePath = @"C:\Program Files (x86)\N8\Saves\eyestrain.ncd";
-            string DefaultPath = @"C:\Program Files (x86)\N8\Saves\default.ncd";
             
             string[] colors = { "blue", "green", "orange", "purple", "red", "black"};
             //string[] colors = {"black" };
@@ -48,44 +47,19 @@ namespace N8Parser.Level_Modifiers
             Console.WriteLine("Blocksize is: " + blocksize + ", count is: " + count);
             */
 
-            Console.ReadLine();
-            var locations = Utilities.EvenSphere(new Vector3D(0, 100,1000), 200, 10, 2 * Math.PI);
-
-            
-
-
             for(int i = 0; i < 300; i++)
             {
                 string color = colors[i%colors.Length];
                 //string color = "black";
                 N8Block CurrentBlock = LevelBlocks.GenerateBlock("simple." + color + ".land.mega", names[rand.Next(names.Length)]);
-                CurrentBlock.position.Z = 700;
-                CurrentBlock.rotation = new Quaternion(new Vector3D(0,0,1), rand.Next(0,360)) * new Quaternion(new Vector3D(0,1,0), 90);
+                CurrentBlock.position = rand.NextVector(new Vector3D(-2000, -2000, -1000), new Vector3D(2000, 2000, 0));
+                CurrentBlock.rotation = rand.NextQuaternion();
             }
-            
 
-            
-            N8Level DefaultGround = new N8Level(DefaultPath);
 
-            Level.MergeWithDestructive(DefaultGround);
-            
-
-            string ret = Level.GenerateSaveFile();
-            Console.WriteLine(ret);
+            Utilities.Save(SavePath, Level);
             Console.Read();
 
-            if (!File.Exists(SavePath))
-            {
-                using (File.Create(SavePath)) { }
-            }
-
-            using (StreamWriter sw = new StreamWriter(File.Open(SavePath, FileMode.Truncate, FileAccess.Write, FileShare.None)))
-            {
-                sw.WriteLine(ret);
-            }
-
-            
-            Console.WriteLine(ret);
             
         }
     }

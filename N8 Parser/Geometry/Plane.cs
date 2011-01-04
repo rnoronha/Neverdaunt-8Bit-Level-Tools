@@ -6,7 +6,7 @@ using System.Windows.Media.Media3D;
 
 namespace N8Parser
 {
-    class Plane
+    public class Plane
     {
         Vector3D parts;
         double d;

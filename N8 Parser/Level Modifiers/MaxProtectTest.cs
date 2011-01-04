@@ -146,18 +146,9 @@ namespace N8Parser
                          .Append(RandomBottomVector)
                          .Mover(RandVectBottom.In, null, "Flee Mover 2");
 
-
-            DataBlock CurrentCount = MovementLogic.NewDataBlock("Count", "0");
-            DataBlock Message = MovementLogic.NewDataBlock("Message", "Number of attempts to take this shrine since last load\b ");
-            DataBlock One = MovementLogic.NewDataBlock("One", "1");
-            DataBlock MessageDisplay = MovementLogic.NewDataBlock("Message text");
-
-            MovementLogic.Plus(CurrentCount.In, One.In, CurrentCount.Out)
-                        .And(Message.In, CurrentCount.In, MessageDisplay.Out);
-
             MovementLogic.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
             Reciever.LayoutRandGrid(new Vector3D(80, 0, -100), UpsideDown, 90, 90);
-            foreach (N8Tronic t in Reciever.tronics.TronicsByID)
+            foreach (N8Tronic t in Reciever.tronics.Tronics)
             {
                 TronicAttach.AttachToMeAbsolute(t);
             }
@@ -169,7 +160,7 @@ namespace N8Parser
                 TronicAttach.AttachToMe(t);
             }
 
-            foreach (N8Tronic t in LevelBlocks.TronicsByID)
+            foreach (N8Tronic t in LevelBlocks.Tronics)
             {
                 if (!(t.type == "rkeyboard"))
                 {
@@ -179,18 +170,13 @@ namespace N8Parser
 
             }
 
-            MovementLogic.Display(MessageDisplay.In, "Message", "Number of attempts since last load\b 0");
             LevelBlocks.CopyFromDestructive(MovementLogic.tronics);
             LevelBlocks.CopyFromDestructive(Reciever.tronics);
-            LevelBlocks.Display("TakeMessage", "Congratulations on taking this cell! /n " +
-                                               "The tokens in it are yours, I hope they cover your expenses \b) /n " +
-                                               "There is a 10 ticket reward for telling Tacroy how you took it /n " +
-                                               "Send him a message on the forums or contact him when he's online to claim your prize.");
 
-            N8Tronic RetMover = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Return Mover" select t).First();
-            N8Tronic FleeMover1 = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Flee Mover 1" select t).First();
-            N8Tronic FleeMover2 = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Flee Mover 2" select t).First();
-            N8Tronic Rotor = (from N8Tronic t in LevelBlocks.TronicsByID where t.name == "Rotate1" select t).First();
+            N8Tronic RetMover = (from N8Tronic t in LevelBlocks.Tronics where t.name == "Return Mover" select t).First();
+            N8Tronic FleeMover1 = (from N8Tronic t in LevelBlocks.Tronics where t.name == "Flee Mover 1" select t).First();
+            N8Tronic FleeMover2 = (from N8Tronic t in LevelBlocks.Tronics where t.name == "Flee Mover 2" select t).First();
+            N8Tronic Rotor = (from N8Tronic t in LevelBlocks.Tronics where t.name == "Rotate1" select t).First();
 
             RetMover.position.Z = -1000;
             FleeMover1.position.Z = 100;
@@ -203,8 +189,7 @@ namespace N8Parser
 
             TronicAttach.AttachToMe(Rotor);
 
-            Console.WriteLine("Total block count: " + (LevelBlocks.BlocksByID.Count + LevelBlocks.TronicsByID.Count));
-            Console.Read();
+            Console.WriteLine("Total block count: " + (LevelBlocks.Blocks.Count + LevelBlocks.Tronics.Count));
         }
 
         public static void GenerateProxyBubble()
@@ -224,8 +209,8 @@ namespace N8Parser
 
             
             List<Tuple<Vector3D, Quaternion>> points = new List<Tuple<Vector3D,Quaternion>>();
-            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, -1), 45, 45));
-            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 250), 45, 45));
+            //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, -1), 45, 45));
+            //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 250), 45, 45));
             points.Add(Tuple.Create(new Vector3D(120, 0, 250), new Quaternion()));
             points.Add(Tuple.Create(new Vector3D(-120, 0, 250), new Quaternion()));
             points.Add(Tuple.Create(new Vector3D(0, 120, 250), new Quaternion()));
@@ -235,8 +220,9 @@ namespace N8Parser
             points.Add(Tuple.Create(new Vector3D(50, -50, 50), new Quaternion()));
             points.Add(Tuple.Create(new Vector3D(-50, -50, 50), new Quaternion()));
             //*
-            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 80, 500, (double)8 / 16 * Math.PI));
-            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 110, 600));
+            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 300, 500, (double)8 / 16 * Math.PI));
+            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 85, 175, (double)8 / 16 * Math.PI));
+            //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 110, 600));
             //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 90, 700));
             //*/
 
@@ -292,7 +278,7 @@ namespace N8Parser
 
             proxies.MergeWithDestructive(tronics);
 
-            N8Tronic MoverGateway = (from N8Tronic b in proxies.blocks.TronicsByID where b.type == "cifgreat" select b).First();
+            N8Tronic MoverGateway = (from N8Tronic b in proxies.blocks.Tronics where b.type == "cifgreat" select b).First();
             
             N8Block ControlPoint = LevelBlocks.GenerateBlock("snowmancoal", "Control Point");
             ControlPoint.position.X = -100;
@@ -359,10 +345,10 @@ namespace N8Parser
             
 
             //Non position dependent tronics - tronics whose position doesn't matter
-            var NPDTronics = from N8Tronic t in LevelBlocks.TronicsByID
+            var NPDTronics = from N8Tronic t in LevelBlocks.Tronics
                                         where !(t.type == "rproximity" || t.type == "rkeyboard" || t.type == "tmover")
                                         select t;
-            N8Block AttachmentPoint = (from N8Block b in LevelBlocks.BlocksByID
+            N8Block AttachmentPoint = (from N8Block b in LevelBlocks.Blocks
                                        where b.name == "Attach Point"
                                        select b).First();
 
