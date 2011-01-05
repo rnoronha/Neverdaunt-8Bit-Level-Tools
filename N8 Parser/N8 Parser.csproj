@@ -48,10 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Geometry\Cylindrical.cs" />
+    <Compile Include="Geometry\SphereTessellation.cs" />
     <Compile Include="Level Modifiers\AddMoon.cs" />
     <Compile Include="Level Modifiers\Chibifier.cs" />
     <Compile Include="Level Modifiers\Crazy.cs" />
     <Compile Include="Level Modifiers\DeIsland.cs" />
+    <Compile Include="Level Modifiers\DNA.cs" />
     <Compile Include="Level Modifiers\EliteCellGenerator.cs" />
     <Compile Include="Level Modifiers\Flies.cs" />
     <Compile Include="Level Modifiers\GeometriesTest.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Level Modifiers\RedMirror.cs" />
     <Compile Include="Geometry\Spherical.cs" />
     <Compile Include="Tronics\DataNode.cs" />
+    <Compile Include="Tronics\TronicMacros\MessageScreen.cs" />
     <Compile Include="Tronics\TronicSequence.cs" />
     <Compile Include="Tronics\FlowTronics.cs" />
     <Compile Include="Tronics\Node.cs" />

@@ -5,6 +5,8 @@ using System.Text;
 using N8Parser.Level_Modifiers;
 using N8Parser;
 using System.Windows.Media.Media3D;
+using N8Parser.Geometry;
+using N8Parser.Tronics;
 
 namespace Testing
 {
@@ -35,29 +37,22 @@ namespace Testing
 
             //AddMoon.GenerateLevel();
 
-            /*
-            N8Level Level = new N8Level(@"C:\Program Files (x86)\N8\Saves\arrow.ncd");
-            MinorModifiers.RotateLevel(Level, 90, new Vector3D(1, 0, 0));
-            Utilities.Save(@"C:\Program Files (x86)\N8\Saves\arrow_r.ncd", Level);
-            Console.Read();
-            */
+            
+            /*N8Level RotateLevel1 = new N8Level(@"C:\Program Files (x86)\N8\Saves\arrow.ncd");
+            N8Level RotateLevel2 = new N8Level(@"C:\Program Files (x86)\N8\Saves\arrow.ncd");
+            N8Level RotateLevel3 = new N8Level(@"C:\Program Files (x86)\N8\Saves\arrow.ncd");
+            N8Level OriginalLevel = new N8Level(@"C:\Program Files (x86)\N8\Saves\arrow.ncd");
+            //MinorModifiers.RotateLevel(RotateLevel1, 180, new Vector3D(1, 0, 1));
+            //MinorModifiers.RotateLevel(RotateLevel2, 720, new Vector3D(0, 1, 1));
+            MinorModifiers.RotateLevel(RotateLevel3, -360, new Vector3D(1, 1, 0));
+            MinorModifiers.TranslateLevel(OriginalLevel, new Vector3D(0, 0, -1000));
+            OriginalLevel.MergeWithDestructive(RotateLevel1);
+            OriginalLevel.MergeWithDestructive(RotateLevel2);
+            OriginalLevel.MergeWithDestructive(RotateLevel3);
+            Utilities.Save(@"C:\Program Files (x86)\N8\Saves\arrow_r.ncd", OriginalLevel);
+             */
 
-            N8Level Level = new N8Level(@"C:\Program Files (x86)\N8\Saves\megaprotect_skeleton.ncd");
-            var sphere = Utilities.EvenSphere(new Vector3D(0, 0, -1000), 525, 2000, Math.PI / 2);
-            foreach (Tuple<Vector3D, Quaternion> loc in sphere)
-            {
-                N8Block b = Level.blocks.GenerateBlock("landmega", "Hill");
-                b.position.X = Math.Round(loc.Item1.X);
-                b.position.Y = Math.Round(loc.Item1.Y);
-                b.position.Z = Math.Round(loc.Item1.Z);
-                b.rotation = loc.Item2;
-            }
-            Level = MinorModifiers.OrderLoading(Level, new Vector3D(0, 0, 1));
-
-            Utilities.Save(@"C:\Program Files (x86)\N8\Saves\for_duck.ncd", Level);
-
-            Console.WriteLine("Number of blocks: " + Level.blocks.Blocks.Count);
-            Console.Read();
+            DNA.GenerateLevel();
         }
     }
 }

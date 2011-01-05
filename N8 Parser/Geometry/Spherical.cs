@@ -21,7 +21,7 @@ namespace N8Parser
         /// <summary>
         /// Convert a quaternion rotation to a point in a spherical coordinate system.
         /// 
-        /// Who the fuck knows how it works?
+        /// Who knows how the fuck it works?
         /// 
         /// Copied from here: http://web.archive.org/web/20041029003853/http:/www.j3d.org/matrix_faq/matrfaq_latest.html#Q59
         /// </summary>

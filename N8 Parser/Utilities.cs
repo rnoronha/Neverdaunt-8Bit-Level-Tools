@@ -14,6 +14,7 @@ namespace N8Parser
 
         public static double RadToDeg = 180 / Math.PI;
         public static double DegToRad = Math.PI / 180;
+        public const int MAX_BLOCK_COUNT = 349;
 
         public static string ToData(this Vector3D me)
         {
@@ -30,7 +31,31 @@ namespace N8Parser
             var NotLands = from N8Block b in Input.blocks.Blocks where b.type != "landmega" select b;
             return NotLands;
         }
-     
+
+        public static string GetDefaultSaveFolder()
+        {
+            return @"C:\" + Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86) + @"\N8\Saves\";
+        }
+
+        /// <summary>
+        /// Makes an even circle with a known number of blocks
+        /// </summary>
+        /// <param name="Count">Number of blocks</param>
+        /// <param name="Radius">Radius of circle</param>
+        /// <param name="Axis">Axis about which to make the circle</param>
+        /// <returns>A list of cylindricals defining the circle</returns>
+        public static List<Cylindrical> MakeCircle(int Count, int Radius, Vector3D Axis)
+        {
+            List<Cylindrical> ret = new List<Cylindrical>(Count);
+            double tstep = (double)360 / (double)Count;
+            for (int i = 0; i < Count; i++)
+            {
+                ret.Add(new Cylindrical(Radius, i * tstep * Utilities.DegToRad, 0, Axis));
+            }
+
+            return ret;
+        }
+
 
         //This might have some useful stuff on tetrahedrons:
         //http://www.kjmaclean.com/Geometry/Tetrahedron.html
@@ -568,5 +593,7 @@ namespace N8Parser
             SanitizedData = SanitizedData.Replace("\n", "/n ");
             return SanitizedData;
         }
+
+        
     }
 }

@@ -10,6 +10,37 @@ namespace N8Parser.Level_Modifiers
     public class MinorModifiers
     {
         /// <summary>
+        /// Adds a megaland border to the level
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static N8Level AddBorder(N8Level input)
+        {
+            for (int i = -2; i < 2; i++)
+            {
+                N8Block land1 = input.blocks.GenerateBlock("landmega", "border " + i);
+                N8Block land2 = input.blocks.GenerateBlock("landmega", "border " + i);
+                N8Block land3 = input.blocks.GenerateBlock("landmega", "border " + i);
+                N8Block land4 = input.blocks.GenerateBlock("landmega", "border " + i);
+
+                land1.position.X = i * -800;
+                land2.position.X = i * 800;
+
+                land1.position.Y = 1600;
+                land2.position.Y = -1600;
+
+                land3.position.Y = i * 800;
+                land4.position.Y = i * -800;
+
+                land3.position.X = 1600;
+                land4.position.X = -1600;
+
+            }
+
+            return input;
+        }
+
+        /// <summary>
         /// Rotates an entire level. Currently doesn't do tronics.
         /// </summary>
         /// <param name="Input"></param>
@@ -20,12 +51,14 @@ namespace N8Parser.Level_Modifiers
         public static N8Level RotateLevel(N8Level Input, double RotationDegrees, Vector3D axis)
         {
             var LevelBlocks = Input.blocks.Blocks;
+            axis.Normalize();
 
             foreach (N8Block b in LevelBlocks)
             {
                 Cylindrical c = new Cylindrical(b.position, axis);
                 c.Theta += RotationDegrees * Utilities.DegToRad;
                 b.position = c.ToCartesian();
+                b.rotation = new Quaternion(axis, RotationDegrees);
             }
 
             return Input;

@@ -7,7 +7,7 @@ using System.Windows.Media.Media3D;
 
 namespace N8Parser
 {
-    class TronicSequence
+    public class TronicSequence
     {
         public N8BlockFactory tronics;
         private FlowTronic CurrentTronic;
@@ -26,16 +26,7 @@ namespace N8Parser
             return Tuple.Create(CurrentTronic, CurrentOut);
         }
 
-
-        public TronicSequence()
-        {
-            data = new List<DataBlock>();
-            tronics = new N8BlockFactory();
-            sequence = new List<FlowTronic>();
-            Branches = new Stack<Tuple<FlowTronic, Node>>();
-        }
-
-        public TronicSequence(N8BlockFactory blocks)
+        public TronicSequence(N8BlockFactory blocks = null)
         {
             data = new List<DataBlock>();
             if (blocks == null)
@@ -354,9 +345,29 @@ namespace N8Parser
             return this;
         }
 
-        protected TronicSequence Proxy(string name = "Button")
+        protected TronicSequence Proxy(string name = "Proxy")
         {
             Proxy p = tronics.Proxy(name);
+            CurrentTronic = p;
+            CurrentOut = p.GetNode(NodeType.FlowOutA);
+            sequence.Add(p);
+
+            return this;
+        }
+
+        protected TronicSequence CoinVendInit(string name = "CoinVend")
+        {
+            CoinVend c = tronics.CoinVend(name);
+            CurrentTronic = c;
+            CurrentOut = c.GetNode(NodeType.FlowOutB);
+            sequence.Add(c);
+
+            return this;
+        }
+
+        protected TronicSequence Target(string name = "Target")
+        {
+            Target p = tronics.Target(name);
             CurrentTronic = p;
             CurrentOut = p.GetNode(NodeType.FlowOutA);
             sequence.Add(p);
@@ -389,7 +400,13 @@ namespace N8Parser
         public static TronicSequence StartFromKeyboard(N8BlockFactory Blocks = null, DataNodeOut DataOut = null, string name = "Keyboard")
         {
             TronicSequence ts = new TronicSequence(Blocks);
-            ts.Keyboard(DataOut, name);
+            //I just learned about the null coalsece operator! it is awesome.
+            ts.Keyboard(DataOut ?? ts.NewDataBlock().Out, name);
+
+            if (!ts.data.Contains(DataOut.Parent))
+            {
+                ts.data.Add(DataOut.Parent);
+            }
 
             return ts;
         }
@@ -406,6 +423,14 @@ namespace N8Parser
         {
             TronicSequence ts = new TronicSequence(Blocks);
             ts.Proxy(name);
+
+            return ts;
+        }
+
+        public static TronicSequence StartFromTarget(N8BlockFactory Blocks = null, string name = "Proxy")
+        {
+            TronicSequence ts = new TronicSequence(Blocks);
+            ts.Target(name);
 
             return ts;
         }

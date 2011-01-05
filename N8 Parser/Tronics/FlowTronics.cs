@@ -435,6 +435,38 @@ namespace N8Parser.Tronics
         }
     }
 
+    public class CoinVend : FlowTronic
+    {
+
+        public CoinVend(int id) : base(id, "tcoinvend", "Coin Vend") { }
+        public CoinVend(int id, string name) : base(id, "tcoinvend", name) { }
+
+
+        protected override void SetNodes()
+        {
+            SetupNodes(new bool[]
+                //FlowIn, FlowOutA, FlowOutB, DataInA, DataInB, DataOutA, DataOutB, DataBlock
+                 {true,   true,     true,     true,    false,   false,    false,    false }
+            );
+        }
+    }
+
+    public class Target : FlowTronic
+    {
+
+        public Target(int id) : base(id, "rtarget", "Target") { }
+        public Target(int id, string name) : base(id, "rtarget", name) { }
+
+
+        protected override void SetNodes()
+        {
+            SetupNodes(new bool[]
+                //FlowIn, FlowOutA, FlowOutB, DataInA, DataInB, DataOutA, DataOutB, DataBlock
+           { false, true, false, false, false, false, false, false }
+            );
+        }
+    }
+
     public static class TronicExtensions
     {
         public static bool IsPositionDependent(this FlowTronic Input)

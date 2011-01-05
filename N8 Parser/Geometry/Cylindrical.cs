@@ -75,7 +75,6 @@ namespace N8Parser.Geometry
 
             axis = Axis;
             coordinates = FromCartesian(Cartesian);
-            Console.WriteLine("Cartesian to Cylinder: " + Cartesian + " -> " + coordinates);
         }
 
         //From http://www.euclideanspace.com/maths/geometry/space/coordinates/polar/cylindrical/index.htm
@@ -92,7 +91,7 @@ namespace N8Parser.Geometry
 
             r = Math.Sqrt(ax_x_z_part * ax_x_z_part + ax_y_z_part * ax_y_z_part);
             theta = Math.Atan2(ax_y_z_part, ax_x_z_part);
-            h = Cartesian.Z;
+            h = Utilities.DotProduct(axis, Cartesian);
 
             return new Vector3D(r, theta, h);
         }
@@ -104,20 +103,13 @@ namespace N8Parser.Geometry
         public Vector3D ToCartesian()
         {
             Vector3D result;
-            /*
-            double x = R * Math.Cos(Theta);
-            double y = R * Math.Sin(Theta);
-            double z = H;
-            */
 
             double x = Math.Sqrt(axis.Z * axis.Z + axis.Y * axis.Y) * R * Math.Sin(Theta) + H * axis.X;
             double y = Math.Sqrt(axis.Z * axis.Z + axis.X * axis.X) * R * Math.Cos(Theta) + H * axis.Y;
             double z = -axis.X * R * Math.Sin(Theta) - axis.Y * R * Math.Cos(Theta) + H * axis.Z;
 
+
             result = new Vector3D(x, y, z);
-
-            Console.WriteLine("Cylinder to Cartesian: " + coordinates + " -> " + result + "\n");
-
             return result;
         }
 
@@ -159,7 +151,20 @@ namespace N8Parser.Geometry
             }
         }
 
+        public Vector3D Axis
+        {
+            get
+            {
+                return axis;
+            }
+        }
 
+
+
+        public Quaternion GetNormalRotation()
+        {
+            return new Quaternion(Axis, Theta * Utilities.RadToDeg);
+        }
     }
 }
 

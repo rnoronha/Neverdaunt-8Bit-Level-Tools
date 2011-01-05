@@ -369,6 +369,22 @@ namespace N8Parser
 
         }
 
+        public Target Target(string name = "Target")
+        {
+            int NewID = GetNewID();
+            Target temp = new Target(NewID, name);
+            Tronics.Add(temp);
+            return temp;
+        }
+
+        public CoinVend CoinVend(string name = "CoinVend")
+        {
+            int NewID = GetNewID();
+            CoinVend temp = new CoinVend(NewID, name);
+            Tronics.Add(temp);
+            return temp;
+        }
+
         public Delay Delay(string name = "Delay")
         {
             int NewID = GetNewID();
