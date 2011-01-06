@@ -40,6 +40,29 @@ namespace N8Parser.Level_Modifiers
             return input;
         }
 
+        public static N8Level AddCrossroads(N8Level input)
+        {
+            N8Block land = input.blocks.GenerateBlock("street.highway.4way.cross", "Crossroads");
+            for (int i = 0; i < 2; i++)
+            {
+                
+                    N8Block landXp = input.blocks.GenerateBlock("street.highway.mega", "Crossings");
+                    N8Block landYp = input.blocks.GenerateBlock("street.highway.mega", "Crossings");
+                    N8Block landXm = input.blocks.GenerateBlock("street.highway.mega", "Crossings");
+                    N8Block landYm = input.blocks.GenerateBlock("street.highway.mega", "Crossings");
+
+                    landYp.rotation = new Quaternion(new Vector3D(0, 0, 1), 90);
+                    landYm.rotation = new Quaternion(new Vector3D(0, 0, 1), 90);
+
+                    landXp.position.X = i * 1000 + 935;
+                    landXm.position.X = -(i * 1000 + 935);
+                    landYp.position.Y = i * 1000 + 935;
+                    landYm.position.Y = -(i * 1000 + 935);
+            }
+
+            return input;
+        }
+
         /// <summary>
         /// Rotates an entire level. Currently doesn't do tronics.
         /// </summary>
@@ -110,6 +133,12 @@ namespace N8Parser.Level_Modifiers
         public static N8Level OrderLoading(N8Level Input, Vector3D Direction)
         {
             Input.blocks.Blocks = Input.blocks.Blocks.OrderBy((b) => Utilities.DotProduct(b.position, Direction)).ToList();
+            return Input;
+        }
+
+        public static N8Level OrderLoadingCylindrical(N8Level Input)
+        {
+            Input.blocks.Blocks = Input.blocks.Blocks.OrderBy((b) => new Cylindrical(b.position).Theta).ToList();
             return Input;
         }
     }

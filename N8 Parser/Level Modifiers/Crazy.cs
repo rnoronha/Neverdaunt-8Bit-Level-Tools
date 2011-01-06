@@ -10,9 +10,10 @@ namespace N8Parser.Level_Modifiers
     {
         public static N8Level GetLevel()
         {
-            N8Level Level = MaxProtectTest.GetProxyBubble();
+            N8Level Level = new N8Level(); //MaxProtectTest.GetProxyBubble();
+            MinorModifiers.AddCrossroads(Level);
             Random rand = new Random();
-            string[] colors = { "blue", "green", "orange", "purple", "red", "black", "white"};
+            string[] colors = { "blue", "green", "orange", "purple", "red", "black", "white", "yellow"};
             //string[] colors = {"black" };
 
             string[] names = { "OH MY GOD", "IT BURNS", "WHY GOD WHY", "DEAR LORD WHAT IS THIS", 
@@ -26,11 +27,24 @@ namespace N8Parser.Level_Modifiers
             {
                 string color = colors[i % colors.Length];
                 //string color = "black";
-                N8Block CurrentBlock = Level.blocks.GenerateBlock("simple." + color + ".land.mega", names[rand.Next(names.Length)]);
-                CurrentBlock.position = rand.NextVector(new Vector3D(-2000, -2000, -1000), new Vector3D(2000, 2000, -230));
+                N8Block CurrentBlock = Level.blocks.GenerateBlock("simple." + color + ".block", names[rand.Next(names.Length)]);
+                //Keep it out of the crossroads
+                CurrentBlock.position = rand.NextVector(new Vector3D(2000, 2000, -1000), new Vector3D(300, 300, 2000));
+
+                //And flop it around the quadrants randomly
+                if (rand.Next(0, 2) == 0)
+                {
+                    CurrentBlock.position.X *= -1;
+                }
+                if (rand.Next(0, 2) == 0)
+                {
+                    CurrentBlock.position.Y *= -1;
+                }
+
+
                 CurrentBlock.rotation = rand.NextQuaternion();
             }
-            MinorModifiers.OrderLoading(Level, new Vector3D(1,2,0));
+            MinorModifiers.OrderLoadingCylindrical(Level);
             return Level;
         }
 
