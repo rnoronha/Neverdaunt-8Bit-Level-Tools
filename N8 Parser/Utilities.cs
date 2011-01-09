@@ -34,7 +34,7 @@ namespace N8Parser
 
         public static string GetDefaultSaveFolder()
         {
-            return @"C:\" + Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86) + @"\N8\Saves\";
+            return Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86) + @"\N8\Saves\";
         }
 
         /// <summary>

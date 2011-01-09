@@ -8,18 +8,81 @@ namespace N8Parser.Level_Modifiers
 {
     public class Crazy
     {
-        public static N8Level GetLevel()
+        private static string[] colors = { "blue", "green", "orange", "purple", "red", "black", "white", "yellow" };
+        //string[] colors = {"black" };
+
+        private static string[] names = { "OH MY GOD", "IT BURNS", "WHY GOD WHY", "DEAR LORD WHAT IS THIS", 
+                               "DEATH WOULD BE BETTER", "WHERE IS MY EYE-SPOON", "GOOD FUCKING GRIEF", "WHHHHHYYYYYY",
+                               "MOBUNGA EAT YOUR HEART OUT", "SOMEONE KILL IT QUICKLY", "OMFG SIEZURE", "lolwut",
+                               "what is this I don't even"};
+
+        public static N8Level GetBlockRoad(bool diagonal = false)
+        {
+            N8Level Level = new N8Level();
+            Random rand = new Random();
+            int NumBlocks = 349;
+            if (diagonal)
+            {
+                Vector3D diag1 = new Vector3D(1, 1, 0);
+                diag1.Normalize();
+                Vector3D diag2 = new Vector3D(1, -1, 0);
+                diag2.Normalize();
+                //Max distance for a diagonal is Sqrt(4000^2 + 4000^2) ~= 5656, and add an extra two just to make sure it reaches the edges
+                int Min = -5658 / 2;
+                int Max = 5658 / 2;
+                for (int i = 0; i < NumBlocks; i++)
+                {
+                    int mag = rand.Next(Min, Max);
+                    string color = colors[i % colors.Length];
+                    N8Block CurrentBlock = Level.blocks.GenerateBlock("simple." + color + ".block", names[rand.Next(names.Length)]);
+
+                    if (rand.Next(0, 2) == 0)
+                    {
+                        CurrentBlock.position = diag1 * mag;
+                    }
+                    else
+                    {
+                        CurrentBlock.position = diag2 * mag;
+                    }
+
+                    CurrentBlock.rotation = rand.NextQuaternion();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < NumBlocks; i++)
+                {
+                    string color = colors[i % colors.Length];
+                    N8Block CurrentBlock = Level.blocks.GenerateBlock("simple." + color + ".block", names[rand.Next(names.Length)]);
+                    //Either put them in the x-coord area or the y-coord area (yes this means the center will be better covered)
+                    if (rand.Next(0, 2) == 0)
+                    {
+                        CurrentBlock.position = rand.NextVector(new Vector3D(-100, 2000, 0), new Vector3D(100, -2000, 0));
+                    }
+                    else
+                    {
+                        CurrentBlock.position = rand.NextVector(new Vector3D(2000, -100, 0), new Vector3D(-2000, 100, 0));
+                    }
+                    CurrentBlock.rotation = rand.NextQuaternion();
+                }
+            }
+
+            MinorModifiers.OrderLoading(Level, new Vector3D(1, 1, 0));
+
+            return Level;
+        }
+
+        public static void GenerateBlockRoad(bool diagonal = false)
+        {
+            Utilities.Save(Utilities.GetDefaultSaveFolder() + "blockroad.ncd", GetBlockRoad(diagonal));
+        }
+
+        public static N8Level GetCrossroads()
         {
             N8Level Level = new N8Level(); //MaxProtectTest.GetProxyBubble();
             MinorModifiers.AddCrossroads(Level);
             Random rand = new Random();
-            string[] colors = { "blue", "green", "orange", "purple", "red", "black", "white", "yellow"};
-            //string[] colors = {"black" };
-
-            string[] names = { "OH MY GOD", "IT BURNS", "WHY GOD WHY", "DEAR LORD WHAT IS THIS", 
-                               "DEATH WOULD BE BETTER", "WHERE IS MY EYE-SPOON", "GOOD FUCKING GRIEF", "WHHHHHYYYYYY",
-                               "MOBUNGA EAT YOUR HEART OUT", "SOMEONE KILL IT QUICKLY", "OMFG SIEZURE", "lolwut",
-                               "what is this I don't even"};
+     
             int NumBlocks = 349 - (Level.blocks.Tronics.Count + Level.blocks.Blocks.Count);
             Console.WriteLine(NumBlocks);
             Console.ReadLine();
@@ -48,10 +111,10 @@ namespace N8Parser.Level_Modifiers
             return Level;
         }
 
-        public static void GenerateLevel()
+        public static void GenerateCrossroadsLevel()
         {
-            string SavePath = @"C:\Program Files (x86)\N8\Saves\crazy.ncd";
-            Utilities.Save(SavePath, GetLevel());
+            string SavePath = @"C:\Program Files (x86)\N8\Saves\crossroads.ncd";
+            Utilities.Save(SavePath, GetCrossroads());
         }
     }
 }

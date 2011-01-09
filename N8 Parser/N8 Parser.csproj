@@ -40,6 +40,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +61,7 @@
     <Compile Include="Level Modifiers\MazeGenerator.cs" />
     <Compile Include="Level Modifiers\SCIENCE.cs" />
     <Compile Include="Level Modifiers\ShiftSave.cs" />
+    <Compile Include="Level Modifiers\Terrain.cs" />
     <Compile Include="Level Modifiers\Tetrahedron.cs" />
     <Compile Include="Level Modifiers\TileFloor.cs" />
     <Compile Include="Level Modifiers\Eyestrain.cs" />

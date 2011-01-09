@@ -9,7 +9,7 @@ using N8Parser.Level_Modifiers;
 
 namespace N8Parser
 {
-    class MaxProtectTest
+    public class MaxProtectTest
     {
         public static void GenerateProxyBimesh()
         {
@@ -113,7 +113,7 @@ namespace N8Parser
                     .Mover(ReturnPos.In, ReturnPos.Out, "Return Mover")
                     .RadioTransmit(Channel.In, ControlBit.In, "Yeller");
 
-            TronicSequence RandomBottomVector = TronicsTesting.RandomXYVectorGenerator(-900, 900, -1000);
+            TronicSequence RandomBottomVector = TronicsTesting.RandomXYVectorGenerator(-1400, 1400, -1000);
             TronicSequence RandomTopVector = TronicsTesting.RandomXYVectorGenerator(-2000, 2000, 2000);
             DataBlock RandVectTop = RandomTopVector.data[RandomTopVector.data.Count - 1];
             DataBlock RandVectBottom = RandomBottomVector.data[RandomBottomVector.data.Count - 1];
@@ -123,7 +123,7 @@ namespace N8Parser
                 RandomTopVector.GetFirst().FlowInFrom(prox);
             }
 
-            N8Block TronicAttach = LevelBlocks.GenerateBlock("letter.period", "");
+            N8Block TronicAttach = LevelBlocks.GenerateBlock("letter.period", "Attach Point");
             TronicAttach.position.X = 100;
             TronicAttach.position.Z = 500;
 
@@ -220,9 +220,9 @@ namespace N8Parser
             points.Add(Tuple.Create(new Vector3D(50, -50, 50), new Quaternion()));
             points.Add(Tuple.Create(new Vector3D(-50, -50, 50), new Quaternion()));
             //*
-            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 300, 500, (double)8 / 16 * Math.PI));
-            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 85, 175, (double)8 / 16 * Math.PI));
-            //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 110, 600));
+            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 79, 500, (double)8 / 16 * Math.PI));
+            //points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 85, 175, (double)8 / 16 * Math.PI));
+            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 70, 600));
             //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 90, 700));
             //*/
 
@@ -239,6 +239,9 @@ namespace N8Parser
                 proxies.Add(prox);
             }
             FleeTronics(LevelBlocks, proxies);
+
+            Console.WriteLine("Total number of blocks used: " + (LevelBlocks.Tronics.Count + LevelBlocks.Blocks.Count));
+            Console.ReadLine();
             return Level;
 
         }
