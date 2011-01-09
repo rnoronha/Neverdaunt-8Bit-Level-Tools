@@ -68,6 +68,7 @@
     <Compile Include="Level Modifiers\GenerateStack.cs" />
     <Compile Include="Level Modifiers\MaxProtectTest.cs" />
     <Compile Include="Level Modifiers\MinorModifiers.cs" />
+    <Compile Include="Level Modifiers\Translator.cs" />
     <Compile Include="Level Modifiers\TronicsTesting.cs" />
     <Compile Include="N8Block.cs" />
     <Compile Include="N8BlockFactory.cs" />
