@@ -83,9 +83,6 @@ namespace N8Parser.Geometry
             double r;
             double theta;
             double h;
-            double ax_z_sq = axis.Z * axis.Z;
-            double ax_x_sq = axis.X * axis.X;
-            double ax_y_sq = axis.Y * axis.Y;
             double ax_y_z_part = (Cartesian.X * Sqrt(Sq(axis.Z) + Sq(axis.Y)) - axis.X * Cartesian.Z);
             double ax_x_z_part = (Cartesian.Y * Sqrt(Sq(axis.Z) + Sq(axis.X)) - axis.Y * Cartesian.Z);
 
@@ -126,7 +123,9 @@ namespace N8Parser.Geometry
             }
         }
 
-
+        /// <summary>
+        /// Distance around the circle in radians
+        /// </summary>
         public double Theta
         {
             get
@@ -139,7 +138,23 @@ namespace N8Parser.Geometry
             }
         }
 
+        /// <summary>
+        /// Distance around the circle in degrees
+        /// </summary>
+        public double Theta_Degrees
+        {
+            get
+            {
+                return coordinates.Y * Utilities.RadToDeg;
+            }
+            set
+            {
+                coordinates.Y = value * Utilities.DegToRad;
+            }
+        }
+
         public double H
+
         {
             get
             {

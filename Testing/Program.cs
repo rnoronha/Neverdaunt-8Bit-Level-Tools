@@ -15,7 +15,44 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            Crazy.GenerateBlockOctopus();
+            N8Level Level = new N8Level();
+            MinorModifiers.AddCrossroads(Level);
+            Cylindrical X = new Cylindrical(0, 0, 0, new Vector3D(1, 0, 0));
+            Cylindrical Y = new Cylindrical(0, 0, 0, new Vector3D(0, 1, 0));
+            Cylindrical Z = new Cylindrical(0, 0, 0, new Vector3D(0, 0, 1));
+            //Freaking MSFT - why couldn't they make this return a reference to the vector?
+            Vector3D XY_axis = new Vector3D(1, 1, 0);
+            XY_axis.Normalize();
+            Cylindrical XY = new Cylindrical(0, 0, 0, new Vector3D(1, 1, 0));
+            Vector3D XZ_axis = new Vector3D(1, 1, 0);
+            XZ_axis.Normalize();
+            Cylindrical XZ = new Cylindrical(0, 0, 0, new Vector3D(1, 0, 1));
+
+            int BlockCount = 349 - (Level.blocks.Blocks.Count + Level.blocks.Tronics.Count);
+            Cylindrical[] circles = { X, Y, Z, XZ, XY };
+            string[] colors = {"red", "blue", "green", "white", "black"};
+
+            int steps = circles.Length / BlockCount;
+
+            for(int j = 0; j < circles.Length; j++)
+            {
+                Cylindrical c = circles[j];
+                string color = colors[j];
+                c.R = 300;
+                c.H = 0;
+                double ThetaStep = 2 * Math.PI / steps;
+                for (int i = 0; i < steps; i++)
+                {
+                    N8Block b = Level.blocks.GenerateBlock("pixel" + color, c.Axis.ToString());
+                    b.position = c.ToCartesian();
+                    b.rotation = c.GetNormalRotation();
+                    c.Theta += ThetaStep;
+                }
+            }
+
+            Utilities.Save(Utilities.GetDefaultSaveFolder() + "circles.ncd", Level);
+
+            //Crazy.GenerateBlockOctopus();
             /*
             Heightmap seed = new Heightmap(32);
             for (int i = 0; i < 32; i++)
