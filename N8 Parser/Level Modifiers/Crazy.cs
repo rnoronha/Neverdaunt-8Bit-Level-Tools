@@ -15,6 +15,75 @@ namespace N8Parser.Level_Modifiers
                                "DEATH WOULD BE BETTER", "WHERE IS MY EYE-SPOON", "GOOD FUCKING GRIEF", "WHHHHHYYYYYY",
                                "MOBUNGA EAT YOUR HEART OUT", "SOMEONE KILL IT QUICKLY", "OMFG SIEZURE", "lolwut",
                                "what is this I don't even"};
+        public static N8Level GetBlockOctopus()
+        {
+            N8Level Level = new N8Level();
+            Random rand = new Random();
+            int NumBlocks = 349;
+            Vector3D diag1 = new Vector3D(1, 1, 0);
+            diag1.Normalize();
+            Vector3D diag2 = new Vector3D(1, -1, 0);
+            diag2.Normalize();
+            Vector3D plusX = new Vector3D(1, 0, 0);
+            Vector3D plusY = new Vector3D(0, 1, 0);
+            //Max distance for a diagonal is Sqrt(4000^2 + 4000^2) ~= 5656, and add an extra two just to make sure it reaches the edges
+            int DiagMin = -5658 / 2;
+            int DiagMax = 5658 / 2;
+            int StraightMin = -2000;
+            int StraightMax = 2000;
+            for (int i = 0; i < NumBlocks; i++)
+            {
+                
+                string color = colors[i % colors.Length];
+                N8Block CurrentBlock = Level.blocks.GenerateBlock("simple." + color + ".block", names[rand.Next(names.Length)]);
+
+                if (rand.Next(0, 2) == 0)
+                {
+                    int dmag = rand.Next(DiagMin, DiagMax);
+                    if (rand.Next(0, 2) == 0)
+                    {
+
+                        CurrentBlock.position = diag1 * dmag;
+                    }
+                    else
+                    {
+                        CurrentBlock.position = diag2 * dmag;
+                    }
+                }
+                else
+                {
+                    int smag = rand.Next(StraightMin, StraightMax);
+                    if (rand.Next(0, 2) == 0)
+                    {
+
+                        CurrentBlock.position = plusX * smag;
+                    }
+                    else
+                    {
+                        CurrentBlock.position = plusY * smag;
+                    }
+                }
+
+                CurrentBlock.rotation = rand.NextQuaternion();
+            }
+
+            //And now make it come up in the center - blocks closer to 0,0,0 get more of a boost.
+            int MaxHeight = 300;
+            foreach (N8Block b in Level.blocks.Blocks)
+            {
+                b.position.Z = Math.Round(Math.Min(100 / b.position.Length * MaxHeight, 600));
+            }
+
+            MinorModifiers.OrderLoadingCylindrical(Level);
+
+            return Level;
+
+        }
+
+        public static void GenerateBlockOctopus()
+        {
+            Utilities.Save(Utilities.GetDefaultSaveFolder() + "blocktopus.ncd", GetBlockOctopus());
+        }
 
         public static N8Level GetBlockRoad(bool diagonal = false)
         {

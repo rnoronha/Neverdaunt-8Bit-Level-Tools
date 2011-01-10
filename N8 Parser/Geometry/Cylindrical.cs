@@ -69,7 +69,7 @@ namespace N8Parser.Geometry
         /// <param name="Axis">The axis along which this cylinder will run</param>
         public Cylindrical(Vector3D Cartesian, Vector3D Axis)
         {
-            double r = Math.Sqrt(Math.Pow(Cartesian.X, 2) + Math.Pow(Cartesian.Y, 2));
+            double r = Sqrt(Sq(Cartesian.X) + Sq(Cartesian.Y));
             double theta = Math.Atan2(Cartesian.Y, Cartesian.X);
             double z = Cartesian.Z;
 
@@ -86,10 +86,10 @@ namespace N8Parser.Geometry
             double ax_z_sq = axis.Z * axis.Z;
             double ax_x_sq = axis.X * axis.X;
             double ax_y_sq = axis.Y * axis.Y;
-            double ax_y_z_part = (Cartesian.X * Math.Sqrt(ax_z_sq + ax_y_sq) - axis.X * Cartesian.Z);
-            double ax_x_z_part = (Cartesian.Y * Math.Sqrt(ax_z_sq + ax_x_sq) - axis.Y * Cartesian.Z);
+            double ax_y_z_part = (Cartesian.X * Sqrt(Sq(axis.Z) + Sq(axis.Y)) - axis.X * Cartesian.Z);
+            double ax_x_z_part = (Cartesian.Y * Sqrt(Sq(axis.Z) + Sq(axis.X)) - axis.Y * Cartesian.Z);
 
-            r = Math.Sqrt(ax_x_z_part * ax_x_z_part + ax_y_z_part * ax_y_z_part);
+            r = Sqrt(Sq(ax_x_z_part) + Sq(ax_y_z_part));
             theta = Math.Atan2(ax_y_z_part, ax_x_z_part);
             h = Utilities.DotProduct(axis, Cartesian);
 
@@ -165,6 +165,18 @@ namespace N8Parser.Geometry
         {
             return new Quaternion(Axis, Theta * Utilities.RadToDeg);
         }
+
+        //Some functions to make the math look nicer
+        private double Sq(double x)
+        {
+            return x * x;
+        }
+
+        private double Sqrt(double x)
+        {
+            return Math.Sqrt(x);
+        }
+
     }
 }
 

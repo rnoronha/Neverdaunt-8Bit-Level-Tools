@@ -15,7 +15,7 @@ namespace Testing
     {
         static void Main(string[] args)
         {
-            Crazy.GenerateBlockRoad(true);
+            Crazy.GenerateBlockOctopus();
             /*
             Heightmap seed = new Heightmap(32);
             for (int i = 0; i < 32; i++)
