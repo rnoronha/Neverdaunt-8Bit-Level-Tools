@@ -162,7 +162,7 @@ namespace N8Parser
 
             foreach (N8Tronic t in LevelBlocks.Tronics)
             {
-                if (!(t.type == "rkeyboard"))
+                if (!(t.type == "rkeyboard") && !(t.type == "rtarget"))
                 {
                     t.rotation = UpsideDown;
                     TronicAttach.AttachToMe(t);
@@ -208,40 +208,56 @@ namespace N8Parser
             N8BlockFactory LevelBlocks = Level.blocks;
 
             
-            List<Tuple<Vector3D, Quaternion>> points = new List<Tuple<Vector3D,Quaternion>>();
+            List<Tuple<Vector3D, Quaternion>> proxies = new List<Tuple<Vector3D,Quaternion>>();
             //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, -1), 45, 45));
             //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 250), 45, 45));
-            points.Add(Tuple.Create(new Vector3D(120, 0, 250), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(-120, 0, 250), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(0, 120, 250), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(0, -120, 250), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(50, 50, 50), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(-50, 50, 50), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(50, -50, 50), new Quaternion()));
-            points.Add(Tuple.Create(new Vector3D(-50, -50, 50), new Quaternion()));
-            //*
-            points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 79, 500, (double)8 / 16 * Math.PI));
+            
+            proxies.Add(Tuple.Create(new Vector3D(120, 0, 250), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(-120, 0, 250), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(0, 120, 250), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(0, -120, 250), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(50, 50, 50), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(-50, 50, 50), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(50, -50, 50), new Quaternion()));
+            proxies.Add(Tuple.Create(new Vector3D(-50, -50, 50), new Quaternion()));
+            
+            proxies.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 60, 200, (double)8 / 16 * Math.PI));
             //points.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 85, 175, (double)8 / 16 * Math.PI));
-            points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 70, 600));
+            proxies.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 300), 45, 150));
+            proxies.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 300), 45, 75));
+            proxies.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 300), 45, 20));
             //points.AddRange(Utilities.EvenCircle(new Vector3D(0, 0, 50), 90, 700));
             //*/
 
-            Quaternion InitialRotation = new Quaternion(new Vector3D(0, 0, 1), -90) * new Quaternion(new Vector3D(0,1,0), 90);
+            List<Tuple<Vector3D, Quaternion>> targets = new List<Tuple<Vector3D, Quaternion>>();
+            targets.AddRange(Utilities.EvenSphere(new Vector3D(0, 0, 50), 45, 50, (double)10 / 16 * Math.PI));
 
-            List<FlowTronic> proxies = new List<FlowTronic>();
-            for(int i = 0; i < points.Count; i++)
+            Quaternion ProxyRot = new Quaternion(new Vector3D(0, 0, 1), -90) * new Quaternion(new Vector3D(0,1,0), 90);
+            Quaternion TargetRot = new Quaternion();//new Vector3D(0, 1, 0), -90);
+
+            List<FlowTronic> alerts = new List<FlowTronic>();
+            for(int i = 0; i < proxies.Count; i++)
             {
-                Tuple<Vector3D, Quaternion> t = points[i];
+                Tuple<Vector3D, Quaternion> t = proxies[i];
                 FlowTronic prox = LevelBlocks.Proxy("i=" + i);
                 prox.position = t.Item1;
-                prox.rotation = InitialRotation * t.Item2;
 
-                proxies.Add(prox);
+                alerts.Add(prox);
             }
-            FleeTronics(LevelBlocks, proxies);
 
-            Console.WriteLine("Total number of blocks used: " + (LevelBlocks.Tronics.Count + LevelBlocks.Blocks.Count));
-            Console.ReadLine();
+            for (int i = 0; i < targets.Count; i++)
+            {
+                Tuple<Vector3D, Quaternion> t = targets[i];
+                FlowTronic target = LevelBlocks.Target("i=" + i);
+                target.position = t.Item1;
+                target.rotation = TargetRot * t.Item2;
+
+                alerts.Add(target);
+            }
+
+            FleeTronics(LevelBlocks, alerts);
+
+            //Console.WriteLine("Total number of blocks used: " + (LevelBlocks.Tronics.Count + LevelBlocks.Blocks.Count));
             return Level;
 
         }
@@ -303,9 +319,6 @@ namespace N8Parser
             {
                 sw.WriteLine(proxies.GenerateSaveFile());
             }
-
-            
-
         }
         public static void GenerateLevel()
         {

@@ -18,7 +18,7 @@ namespace N8Parser.Geometry
         public Cylindrical()
         {
             coordinates = new Vector3D();
-            axis = new Vector3D(0, 0, 1);
+            Axis = new Vector3D(0, 0, 1);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace N8Parser.Geometry
         /// <param name="Z">Height of this point</param>
         public Cylindrical(double R, double Theta, double Z)
         {
-            axis = new Vector3D(0, 0, 1);
+            Axis = new Vector3D(0, 0, 1);
             coordinates = new Vector3D(R, Theta, Z);
         }
 
@@ -44,9 +44,9 @@ namespace N8Parser.Geometry
             double theta = Math.Atan2(Cartesian.Y, Cartesian.X);
             double z = Cartesian.Z;
             */
-            axis = new Vector3D(0, 0, 1);
+            Axis = new Vector3D(0, 0, 1);
 
-            coordinates = FromCartesian(Cartesian);
+            coordinates = FromCartesian(ToRightHand(Cartesian));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace N8Parser.Geometry
         /// <param name="Axis">The axis along which this cylinder runs</param>
         public Cylindrical(double R, double Theta, double Z, Vector3D Axis)
         {
-            axis = Axis;
+            this.Axis = Axis;
             coordinates = new Vector3D(R, Theta, Z);
         }
 
@@ -69,12 +69,8 @@ namespace N8Parser.Geometry
         /// <param name="Axis">The axis along which this cylinder will run</param>
         public Cylindrical(Vector3D Cartesian, Vector3D Axis)
         {
-            double r = Sqrt(Sq(Cartesian.X) + Sq(Cartesian.Y));
-            double theta = Math.Atan2(Cartesian.Y, Cartesian.X);
-            double z = Cartesian.Z;
-
-            axis = Axis;
-            coordinates = FromCartesian(Cartesian);
+            this.Axis = Axis;
+            coordinates = FromCartesian(ToRightHand(Cartesian));
         }
 
         //From http://www.euclideanspace.com/maths/geometry/space/coordinates/polar/cylindrical/index.htm
@@ -101,13 +97,26 @@ namespace N8Parser.Geometry
         {
             Vector3D result;
 
-            double x = Math.Sqrt(axis.Z * axis.Z + axis.Y * axis.Y) * R * Math.Sin(Theta) + H * axis.X;
-            double y = Math.Sqrt(axis.Z * axis.Z + axis.X * axis.X) * R * Math.Cos(Theta) + H * axis.Y;
+            double x = Sqrt(Sq(axis.Z) + Sq(axis.Y)) * R * Math.Sin(Theta) + H * axis.X;
+            double y = Sqrt(Sq(axis.Z) + Sq(axis.X)) * R * Math.Cos(Theta) + H * axis.Y;
             double z = -axis.X * R * Math.Sin(Theta) - axis.Y * R * Math.Cos(Theta) + H * axis.Z;
 
 
-            result = new Vector3D(x, y, z);
+            result = ToN8(new Vector3D(x, y, z));
             return result;
+        }
+
+        //Converts a vector like I normally use (an N8 vector I guess)
+        //To a vector in the right-hand coordinate system the cylinder page uses
+        private Vector3D ToRightHand(Vector3D N8)
+        {
+            return new Vector3D(N8.Y, N8.Z, N8.X);
+        }
+
+        //Does the reverse of the previous
+        private Vector3D ToN8(Vector3D RightHand)
+        {
+            return new Vector3D(RightHand.Z, RightHand.X, RightHand.Y);
         }
 
         public double R
@@ -170,7 +179,12 @@ namespace N8Parser.Geometry
         {
             get
             {
-                return axis;
+                return ToN8(axis);
+            }
+
+            private set
+            {
+                this.axis = ToRightHand(value);
             }
         }
 

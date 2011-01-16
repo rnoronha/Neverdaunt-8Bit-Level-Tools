@@ -345,7 +345,7 @@ namespace N8Parser
             // Base case: radius = 0, we just return one element
             if (Radius == 0)
             {
-                ret.Add(Tuple.Create(coords.ToCartesian() + Around, new Quaternion(axis, -coords.Theta * RadToDeg)));
+                ret.Add(Tuple.Create(coords.ToCartesian() + Around, coords.GetNormalRotation()));
             }
             else
             {
@@ -359,7 +359,7 @@ namespace N8Parser
                         //If the next one we place is gonna overlap a lot with the first one, end early
                         break;
                     }
-                    ret.Add(Tuple.Create(coords.ToCartesian() + Around, new Quaternion(axis, -coords.Theta * RadToDeg)));
+                    ret.Add(Tuple.Create(coords.ToCartesian() + Around, coords.GetNormalRotation()));
                 }
             }
             return ret;

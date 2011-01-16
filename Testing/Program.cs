@@ -15,44 +15,102 @@ namespace Testing
     {
         static void Main(string[] args)
         {
+            /*
+            for (int i = 0; i < 4; i++)
+            {
+                N8Level stack = MaxProtectTest.GetProxyBubble();
+
+                for (int k = -1000; k < 2000; k += 60)
+                {
+                    N8Block b = stack.blocks.GenerateBlock("megafloor", "stack");
+                    b.position = new Vector3D(2000, 2000, k);
+                }
+
+                N8Block corner1 = stack.blocks.GenerateBlock("landmega", "Ring");
+                corner1.position = new Vector3D(-1600, -1600, 0);
+                corner1.rotation = new Quaternion(new Vector3D(0,0,1), 90);
+                N8Block corner2 = stack.blocks.GenerateBlock("landmega", "Ring");
+                corner2.position = new Vector3D(-800, -800, 0);
+                corner2.rotation = new Quaternion(new Vector3D(0,0,1), 90);
+
+                //Inner ring
+                for (int l = 0; l <= 1600; l+= 800)
+                {
+                    N8Block ringX = stack.blocks.GenerateBlock("landmega", "Ring");
+                    ringX.position = new Vector3D(l, -800, 0);
+                    ringX.rotation = new Quaternion(new Vector3D(0, 0, 1), 90);
+
+                    N8Block ringY = stack.blocks.GenerateBlock("landmega", "Ring");
+                    ringY.position = new Vector3D(-800, l, 0);
+                    ringY.rotation = new Quaternion(new Vector3D(0, 0, 1), 90);
+                }
+
+                //outer ring
+                for (int l = -800; l <= 1600; l += 800)
+                {
+                    N8Block ringX = stack.blocks.GenerateBlock("landmega", "Ring");
+                    ringX.position = new Vector3D(l, -1600, 0);
+                    ringX.rotation = new Quaternion(new Vector3D(0, 0, 1), 90);
+
+                    N8Block ringY = stack.blocks.GenerateBlock("landmega", "Ring");
+                    ringY.position = new Vector3D(-1600, l, 0);
+                    ringY.rotation = new Quaternion(new Vector3D(0, 0, 1), 90);
+                }
+
+                stack = MinorModifiers.RotateLevel(stack, i * 90, new Vector3D(0, 0, 1));
+
+
+                Utilities.Save(Utilities.GetDefaultSaveFolder() + "machostack" + i + ".ncd", stack);
+            }
+            */
+            
+
+
+            Crazy.GenerateBlockOctopus();
+            /*
             N8Level Level = new N8Level();
             MinorModifiers.AddCrossroads(Level);
-            Cylindrical X = new Cylindrical(0, 0, 0, new Vector3D(1, 0, 0));
+            Cylindrical X = new Cylindrical(0, 0, 0, new Vectsor3D(1, 0, 0));
             Cylindrical Y = new Cylindrical(0, 0, 0, new Vector3D(0, 1, 0));
             Cylindrical Z = new Cylindrical(0, 0, 0, new Vector3D(0, 0, 1));
             //Freaking MSFT - why couldn't they make this return a reference to the vector?
             Vector3D XY_axis = new Vector3D(1, 1, 0);
             XY_axis.Normalize();
-            Cylindrical XY = new Cylindrical(0, 0, 0, new Vector3D(1, 1, 0));
-            Vector3D XZ_axis = new Vector3D(1, 1, 0);
+            Cylindrical XY = new Cylindrical(0, 0, 0, XY_axis);
+
+            Vector3D YZ_axis = new Vector3D(0, 1, 1);
+            YZ_axis.Normalize();
+            Cylindrical YZ = new Cylindrical(0, 0, 0, YZ_axis);
+
+            Vector3D XZ_axis = new Vector3D(1, 0, 1);
             XZ_axis.Normalize();
-            Cylindrical XZ = new Cylindrical(0, 0, 0, new Vector3D(1, 0, 1));
+            Cylindrical XZ = new Cylindrical(0, 0, 0, XZ_axis);
 
-            int BlockCount = 349 - (Level.blocks.Blocks.Count + Level.blocks.Tronics.Count);
-            Cylindrical[] circles = { X, Y, Z, XZ, XY };
-            string[] colors = {"red", "blue", "green", "white", "black"};
+            int BlockCount = 300 - (Level.blocks.Blocks.Count + Level.blocks.Tronics.Count);
+            Cylindrical[] circles = { X, Y, Z, XZ, YZ, XY };
+            string[] colors = {"red", "blue", "green", "white", "black", "brown"};
 
-            int steps = circles.Length / BlockCount;
+            int steps = BlockCount / circles.Length;
 
             for(int j = 0; j < circles.Length; j++)
             {
                 Cylindrical c = circles[j];
                 string color = colors[j];
-                c.R = 300;
+                c.R = 500;
                 c.H = 0;
                 double ThetaStep = 2 * Math.PI / steps;
                 for (int i = 0; i < steps; i++)
                 {
-                    N8Block b = Level.blocks.GenerateBlock("pixel" + color, c.Axis.ToString());
+                    N8Block b = Level.blocks.GenerateBlock("letter.period.big", i + "");//"pixel" + color, i + "");
                     b.position = c.ToCartesian();
                     b.rotation = c.GetNormalRotation();
                     c.Theta += ThetaStep;
                 }
             }
-
+            //MinorModifiers.OrderLoadingCylindrical(Level);
             Utilities.Save(Utilities.GetDefaultSaveFolder() + "circles.ncd", Level);
-
-            //Crazy.GenerateBlockOctopus();
+            //*/
+            
             /*
             Heightmap seed = new Heightmap(32);
             for (int i = 0; i < 32; i++)
