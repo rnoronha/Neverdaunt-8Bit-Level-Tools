@@ -96,6 +96,15 @@ namespace N8Parser
             _id = newID;         
         }
 
+        public string ToStringRounded()
+        {
+            Vector3D originalPos = position;
+            position = position.round();
+            string ret = ToString();
+            position = originalPos;
+            return ret;
+        }
+
         public override string ToString()
         {
             string SanName = Utilities.Sanitize(name);

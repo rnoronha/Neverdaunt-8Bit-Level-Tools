@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelModTools", "LevelModTools\LevelModTools.csproj", "{F8DF6E4E-F018-4678-B174-C2BDA1466377}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainGUI", "TerrainGUI\TerrainGUI.csproj", "{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,6 +33,10 @@ Global
 		{F8DF6E4E-F018-4678-B174-C2BDA1466377}.Debug|x86.Build.0 = Debug|x86
 		{F8DF6E4E-F018-4678-B174-C2BDA1466377}.Release|x86.ActiveCfg = Release|x86
 		{F8DF6E4E-F018-4678-B174-C2BDA1466377}.Release|x86.Build.0 = Release|x86
+		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Debug|x86.ActiveCfg = Debug|x86
+		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Debug|x86.Build.0 = Debug|x86
+		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Release|x86.ActiveCfg = Release|x86
+		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

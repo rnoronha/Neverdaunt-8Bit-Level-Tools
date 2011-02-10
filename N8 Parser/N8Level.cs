@@ -20,6 +20,10 @@ namespace N8Parser
         {
             int lineNum = 0;
             blocks = new N8BlockFactory();
+            if (!SavePath.EndsWith(".ncd"))
+            {
+                SavePath += ".ncd";
+            }
             using (StreamReader sr = new StreamReader(File.OpenRead(SavePath)))
             {
                 string input;
@@ -133,7 +137,7 @@ namespace N8Parser
             }
         }
 
-        public string GenerateSaveFile()
+        public string GenerateSaveFile(bool DoNotRound = false)
         {
             //For sanity checking - throw an exception if we see the same ID twice
             HashSet<int> SeenIDs = new HashSet<int>();
@@ -146,7 +150,14 @@ namespace N8Parser
                 {
                     throw new Exception("Adding the same ID twice! Abjort!");
                 }
-                ret.AppendLine(block.ToString());
+                if (DoNotRound)
+                {
+                    ret.AppendLine(block.ToString());
+                }
+                else
+                {
+                    ret.AppendLine(block.ToStringRounded());
+                }
             }
 
             ret.AppendLine("tronics");
@@ -157,7 +168,14 @@ namespace N8Parser
                 {
                     throw new Exception("Adding the same ID twice! Abjort!");
                 }
-                ret.AppendLine(tronic.ToString());
+                if (DoNotRound)
+                {
+                    ret.AppendLine(tronic.ToString());
+                }
+                else
+                {
+                    ret.AppendLine(tronic.ToStringRounded());
+                }
             }
 
             ret.AppendLine("attach");

@@ -552,6 +552,12 @@ namespace N8Parser
             return ret;
         }
 
+        public static Vector3D round(this Vector3D input)
+        {
+            return new Vector3D(Math.Round(input.X), Math.Round(input.Y), Math.Round(input.Z));
+        }
+    
+
         /// <summary>
         /// Returns a random point on the surface of a unit sphere. Formula from here: http://mathproofs.blogspot.com/2005/04/uniform-random-distribution-on-sphere.html
         /// </summary>
@@ -568,6 +574,12 @@ namespace N8Parser
 
         public static void Save(string SavePath, N8Level Level)
         {
+
+            if (!SavePath.EndsWith(".ncd"))
+            {
+                SavePath += ".ncd";
+            }
+
             if (!File.Exists(SavePath))
             {
                 using (File.Create(SavePath)) { }
@@ -577,6 +589,13 @@ namespace N8Parser
             {
                 sw.WriteLine(Level.GenerateSaveFile());
             }
+        }
+
+        public static N8Level GetDefault()
+        {
+            string DefaultPath = @"C:\Program Files (x86)\N8\Saves\default.ncd";
+            N8Level DefaultGround = new N8Level(DefaultPath);
+            return DefaultGround;
         }
 
         public static void MergeWithDefault(N8Level toMerge)

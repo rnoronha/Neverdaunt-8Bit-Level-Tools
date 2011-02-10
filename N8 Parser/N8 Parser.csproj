@@ -57,7 +57,9 @@
     <Compile Include="Level Modifiers\DNA.cs" />
     <Compile Include="Level Modifiers\EliteCellGenerator.cs" />
     <Compile Include="Level Modifiers\Flies.cs" />
+    <Compile Include="Level Modifiers\Forest.cs" />
     <Compile Include="Level Modifiers\GeometriesTest.cs" />
+    <Compile Include="Level Modifiers\MachoStacks.cs" />
     <Compile Include="Level Modifiers\MazeGenerator.cs" />
     <Compile Include="Level Modifiers\SCIENCE.cs" />
     <Compile Include="Level Modifiers\ShiftSave.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Level Modifiers\MinorModifiers.cs" />
     <Compile Include="Level Modifiers\Translator.cs" />
     <Compile Include="Level Modifiers\TronicsTesting.cs" />
+    <Compile Include="Level Modifiers\WeaselGame.cs" />
     <Compile Include="N8Block.cs" />
     <Compile Include="N8BlockFactory.cs" />
     <Compile Include="Level_Parse_Test.cs" />

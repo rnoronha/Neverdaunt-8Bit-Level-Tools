@@ -19,6 +19,11 @@ namespace N8Parser
         public int BlockCount = 0;
         public static int MaxBlockCount = 349;
 
+        public void ResetIDs()
+        {
+            MaxID = 1;
+        }
+
         public N8BlockFactory() 
         {
             Blocks = new List<N8Block>();
@@ -484,5 +489,10 @@ namespace N8Parser
             return temp;
         }
 
+
+        internal void SetNextID(int NewID)
+        {
+            MaxID = NewID;
+        }
     }
 }

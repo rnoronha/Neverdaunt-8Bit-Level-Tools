@@ -8,9 +8,9 @@ namespace N8Parser.Level_Modifiers
 {
     class GenerateStack
     {
-        public static N8Level GetLevel(int height, Vector3D bottom, string BlockType, string BlockName, int BlockHeight)
+        public static N8Level GetLevel(int height, Vector3D bottom, string BlockType, string BlockName, int BlockHeight, N8Level input = null)
         {
-            N8Level level = new N8Level();
+            N8Level level = input??new N8Level();
 
             for (int i = 0; i < height; i += BlockHeight)
             {

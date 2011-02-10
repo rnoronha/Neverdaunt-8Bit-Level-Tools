@@ -9,6 +9,35 @@ namespace N8Parser.Level_Modifiers
 {
     public class MinorModifiers
     {
+
+        /// <summary>
+        /// Copies a block in input with ID blockID and puts it in NewPosition
+        /// This will copy attachments and wirings too.
+        /// Note that this does not work on tronics, though if a tronic is attached to a block it will be copied.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="BlockID"></param>
+        /// <param name="NewPosition"></param>
+        /// <returns></returns>
+        public static N8Level CopyBlock(N8Level input, int BlockID, Vector3D NewPosition)
+        {
+            N8Block ToCopy = (from N8Block b in input.blocks.Blocks where b.ID == BlockID select b).First();
+
+            N8Block Copy = input.blocks.GenerateBlock(ToCopy.type, ToCopy.name);
+            Copy.position = NewPosition;
+
+            foreach (N8Block b in ToCopy.Attachees)
+            {
+                if (b is N8Tronic)
+                {
+
+                }
+            }
+
+            return input;
+
+        }
+
         /// <summary>
         /// Adds a megaland border to the level
         /// </summary>
@@ -81,7 +110,7 @@ namespace N8Parser.Level_Modifiers
                 Cylindrical c = new Cylindrical(b.position, axis);
                 c.Theta += RotationDegrees * Utilities.DegToRad;
                 b.position = c.ToCartesian();
-                b.rotation = new Quaternion(axis, RotationDegrees);
+                b.rotation = b.rotation * new Quaternion(axis, RotationDegrees);
             }
 
             return Input;

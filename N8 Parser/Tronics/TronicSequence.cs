@@ -180,6 +180,7 @@ namespace N8Parser
             {
                 NextTronic.FlowOutTo(Else.GetFirst(), NodeType.FlowOutB);
                 this.tronics.CopyFromDestructive(Else.tronics);
+                this.sequence.AddRange(Else.sequence);
             }
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutA));
@@ -206,6 +207,7 @@ namespace N8Parser
             {
                 NextTronic.FlowOutTo(Else.GetFirst(), NodeType.FlowOutA);
                 this.tronics.CopyFromDestructive(Else.tronics);
+                this.sequence.AddRange(Else.sequence);
             }
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutB));
@@ -227,6 +229,7 @@ namespace N8Parser
             {
                 NextTronic.FlowOutTo(Else.GetFirst(), NodeType.FlowOutB);
                 this.tronics.CopyFromDestructive(Else.tronics);
+                this.sequence.AddRange(Else.sequence);
             }
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutA));
             NoteBranch(NodeType.FlowOutB);
@@ -252,6 +255,7 @@ namespace N8Parser
             {
                 NextTronic.FlowOutTo(Else.GetFirst(), NodeType.FlowOutA);
                 this.tronics.CopyFromDestructive(Else.tronics);
+                this.sequence.AddRange(Else.sequence);
             }
 
             Append(NextTronic, NextTronic.GetNode(NodeType.FlowOutB));
