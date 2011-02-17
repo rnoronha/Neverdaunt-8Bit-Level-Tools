@@ -108,6 +108,13 @@ namespace N8Parser
         public override string ToString()
         {
             string SanName = Utilities.Sanitize(name);
+            rotation.Normalize();
+
+            if (rotation.ToString().Contains("NaN"))
+            {
+                rotation = new Quaternion();
+            }
+
             //Apparently the N8 server dislikes doubles, so cast all these suckers to floats before outputting
             string ret = _id + ":" + type + ":" + SanName + ":" + (float)position.X + "," + (float)position.Z + "," + (float)position.Y
                             + ":" + (float)rotation.W + "," + (float)rotation.X + "," + (float)rotation.Z + "," + (float)rotation.Y

@@ -194,7 +194,7 @@ namespace N8Parser
 
             RetMover.position.Z = -1000;
             FleeMover1.position.Z = 0;
-            FleeMover2.position.X = -30;
+            FleeMover1.position.X = -30;
             FleeMover2.position.Z = 0;
             FleeMover2.position.X = 30;
             RetMover.Detach();

@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapConfig.Designer.cs">
+      <DependentUpon>MapConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="TerrainGUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +61,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MapConfig.resx">
+      <DependentUpon>MapConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TerrainGUI.resx">
       <DependentUpon>TerrainGUI.cs</DependentUpon>
     </EmbeddedResource>

@@ -42,6 +42,8 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadHeightmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveHeightmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadN8MapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.SeedEntry)).BeginInit();
             this.FileMenu.SuspendLayout();
             this.SuspendLayout();
@@ -158,7 +160,8 @@
             // FileMenu
             // 
             this.FileMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.FileMenu.Location = new System.Drawing.Point(0, 0);
             this.FileMenu.Name = "FileMenu";
             this.FileMenu.Size = new System.Drawing.Size(285, 24);
@@ -187,6 +190,21 @@
             this.saveHeightmapToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.saveHeightmapToolStripMenuItem.Text = "Save heightmap";
             this.saveHeightmapToolStripMenuItem.Click += new System.EventHandler(this.saveHeightmapToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadN8MapToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // loadN8MapToolStripMenuItem
+            // 
+            this.loadN8MapToolStripMenuItem.Name = "loadN8MapToolStripMenuItem";
+            this.loadN8MapToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadN8MapToolStripMenuItem.Text = "Load N8 map";
+            this.loadN8MapToolStripMenuItem.Click += new System.EventHandler(this.loadN8MapToolStripMenuItem_Click);
             // 
             // TerrainGUI
             // 
@@ -230,6 +248,8 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadHeightmapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveHeightmapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadN8MapToolStripMenuItem;
     }
 }
 

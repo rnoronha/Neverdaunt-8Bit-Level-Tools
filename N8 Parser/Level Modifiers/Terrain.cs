@@ -42,9 +42,9 @@ namespace N8Parser.Level_Modifiers
         }
 
         //Executes various different heightmap forming functions at random
-        public static Heightmap Arbitrary(Heightmap seed, SortedList<double, Action> functions, int iterations = 10000, HashSet<Point> holds = null, Random random = null, Func<int, bool> StepCallback = null)
+        public static Heightmap Arbitrary(Heightmap seed, SortedList<double, Action> functions, int iterations = 10000, Random random = null, Func<int, bool> StepCallback = null)
         {
-            Map = new Heightmap(seed.Map, holds ?? new HashSet<Point>());
+            Map = seed;
             Random rand = random ?? new Random();
 
             //Want to make sure that they're sorted in descending order and normalized.
@@ -138,11 +138,12 @@ namespace N8Parser.Level_Modifiers
                 valleyMul *= -1;
             }
 
+            //Calculate both random values always to make this more stable between true and false
             int radiusX = rand.Next(MaxRadius);
-            int radiusY = radiusX;
-            if (ellipse)
+            int radiusY = rand.Next(MaxRadius);
+            if (!ellipse)
             {
-                radiusY = rand.Next(MaxRadius);
+                radiusY = radiusX;
             }
 
 
@@ -172,12 +173,12 @@ namespace N8Parser.Level_Modifiers
         /// <returns>The trimmed bitmap</returns>
         public static Bitmap TrimBounds(Bitmap input)
         {
-            Point max = new Point(int.MinValue, int.MinValue);
-            Point min = new Point(int.MaxValue, int.MaxValue);
+            Point max = new Point(0, 0);
+            Point min = new Point(input.Width, input.Height);
             
             for (int i = 0; i < input.Width; i++)
             {
-                for (int j = 0; j < input.Width; j++)
+                for (int j = 0; j < input.Height; j++)
                 {
                     if (input.GetPixel(i, j) == Color.FromArgb(0, 0, 0))
                     {
@@ -187,6 +188,13 @@ namespace N8Parser.Level_Modifiers
                         min.Y = Math.Min(j, min.Y);
                     }
                 }
+            }
+
+            //If we didn't find any black pixels, just return a copy of the input - we can't trim it.
+
+            if(max == new Point(0,0) && min == new Point(input.Width, input.Height))
+            {
+                return new Bitmap(input);
             }
 
             Bitmap ret = new Bitmap(1+max.X - min.X, 1+max.Y - min.Y);
@@ -215,14 +223,18 @@ namespace N8Parser.Level_Modifiers
         /// <returns>A minimized version of the map</returns>
         public static Bitmap MinimizeMap(string path, int scale = 8)
         {
-            Bitmap current = new Bitmap(path);
-            Bitmap ret = new Bitmap(current.Width/scale, current.Height/scale);
+            return MinimizeMap(new Bitmap(path), scale);
+        }
+
+        public static Bitmap MinimizeMap(Bitmap input, int scale = 8)
+        {
+            Bitmap ret = new Bitmap((input.Width / scale), (input.Height / scale));
 
             for (int i = 0; i < ret.Width; i++)
             {
                 for (int j = 0; j < ret.Height; j++)
                 {
-                    ret.SetPixel(i, j, current.GetPixel(i * scale, j * scale));
+                    ret.SetPixel(i, j, input.GetPixel(i * scale, j * scale));
                 }
             }
 
@@ -251,11 +263,55 @@ namespace N8Parser.Level_Modifiers
         }
 
         /// <summary>
-        /// Processes the map to make it fit for consumption. Does several things:
-        /// 1. Outlines the edge of the landmass in black
-        /// 2. Turns all build-in-able cells green (argb 255, 0, 255, 0)
-        /// 2a. This means team cells, elite cells, construct cells and public cells
-        /// 3. Turns all not-build-in-able cells red (argb 255, 255, 0)
+        /// Turns blank cells that are adjacent to a non-blank cell black - in other words, outlines the map.
+        /// </summary>
+        /// <param name="input">The map to outline</param>
+        /// <returns>The outlined map</returns>
+        public static Bitmap OutlineMap(Bitmap input)
+        {
+            Bitmap ret = new Bitmap(input);
+            for (int i = 0; i < input.Width; i++)
+            {
+                for (int j = 0; j < input.Height; j++)
+                {
+                    Color current = ret.GetPixel(i, j);
+                    //Check to see if empty pixels are borders
+                    if (current == Color.FromArgb(0, 0, 0, 0))
+                    {
+                        for (int x = i - 1; x <= i + 1; x++)
+                        {
+                            for (int y = j - 1; y <= j + 1; y++)
+                            {
+                                //Don't test yourself obvs
+                                if (!((x == 0) && (y == 0)))
+                                {
+                                    //Invalid states, skip them
+                                    if (x < 0 || x >= input.Width || y < 0 || y >= input.Height)
+                                    {
+                                        continue;
+                                    }
+
+                                    //If we're next to a non-blank or black pixel, color us in
+                                    if (ret.GetPixel(x, y) != Color.FromArgb(0, 0, 0, 0) &&
+                                        ret.GetPixel(x, y) != Color.FromArgb(255, 0, 0, 0))
+                                    {
+                                        ret.SetPixel(i, j, Color.FromArgb(255, 0, 0, 0));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Processes the map to make it fit for consumption. Does a couple of things:
+        /// 1. Turns all build-in-able cells green (argb 255, 0, 255, 0)
+        /// 1a. This means team cells, elite cells, construct cells and public cells
+        /// 2. Turns all not-build-in-able cells red (argb 255, 255, 0)
         /// </summary>
         /// <param name="input">A 40x40 N8 landmass bitmap</param>
         /// <returns>The bitmap, modified as stated in the summary</returns>
@@ -305,32 +361,6 @@ namespace N8Parser.Level_Modifiers
                     else if(NonBuildableCells.Contains(current))
                     {
                         ret.SetPixel(i, j, Color.FromArgb(255,0,0));
-                    }
-                    //Check to see if empty pixels are borders
-                    else if (current == Color.FromArgb(0, 0, 0, 0))
-                    {
-                        for (int x = i - 1; x <= i + 1; x++)
-                        {
-                            for (int y = j - 1; y <= j + 1; y++)
-                            {
-                                //Don't test yourself obvs
-                                if (!((x == 0) && (y == 0)))
-                                {
-                                    //Invalid states, skip them
-                                    if (x < 0 || x >= input.Width || y < 0 || y >= input.Height)
-                                    {
-                                        continue;
-                                    }
-
-                                    //If we're next to a non-blank or black pixel, color us in
-                                    if (ret.GetPixel(x, y) != Color.FromArgb(0, 0, 0, 0) &&
-                                        ret.GetPixel(x, y) != Color.FromArgb(255, 0, 0, 0))
-                                    {
-                                        ret.SetPixel(i, j, Color.FromArgb(255, 0, 0, 0));
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -472,27 +502,34 @@ namespace N8Parser.Level_Modifiers
         public static List<List<Heightmap>> ChopHeightmap(int SquareSize, Heightmap input)
         {
             List<List<Heightmap>> ret = new List<List<Heightmap>>();
-
             List<List<int>> rawmap = input.Map;
-            IEnumerable<List<int>> ColumnRest = rawmap.Skip(SquareSize);
-            IEnumerable<List<int>> Columns = rawmap.Take(SquareSize);
+
+            IEnumerable<List<int>> RestColumns;
+            IEnumerable<IEnumerable<int>> RestRows;
+            RestColumns = rawmap;
+            int count = 0;
             do
             {
-                IEnumerable<IEnumerable<int>> RowsRest = Columns.Select((c) => c.Skip(SquareSize));
-                IEnumerable<IEnumerable<int>> Rows = Columns.Select((c) => c.Take(SquareSize));
+                IEnumerable<List<int>> CurrentColumns = RestColumns.Take(SquareSize);
+                RestColumns = RestColumns.Skip(SquareSize);
+
                 ret.Add(new List<Heightmap>());
+                RestRows = CurrentColumns;
+
                 do
                 {
-                    ret.Last().Add(new Heightmap(Rows.Select((c) => c.ToList()).ToList()));
-                    Rows = RowsRest.Select((c) => c.Take(SquareSize));
-                    RowsRest = RowsRest.Select((c) => c.Skip(SquareSize));
-                } while (Rows.Max((c) => c.Count()) > 0);
 
-                Columns = ColumnRest.Take(SquareSize);
-                ColumnRest = ColumnRest.Skip(SquareSize);
+                    IEnumerable<IEnumerable<int>> CurrentRows = RestRows.Select((x) => x.Take(SquareSize));
+                    RestRows = RestRows.Select((x) => x.Skip(SquareSize));
 
-            } while (Columns.Count() > 0);
+                    List<List<int>> CurrentMap = CurrentRows.Select((x) => x.ToList()).ToList();
+                    ret[count].Add(new Heightmap(CurrentMap));
+                } while (RestRows.Max((x)=>x.Count()) > 0);
 
+                count++;
+
+            } while (RestColumns.Count() > 0);
+            
             return ret;
         }
     }
@@ -502,6 +539,18 @@ namespace N8Parser.Level_Modifiers
         private HashSet<Point> HeldValues = new HashSet<Point>();
         private int myXSize;
         private int myYSize;
+
+        public HashSet<Point> Holds
+        {
+            get
+            {
+                return HeldValues;
+            }
+            set
+            {
+                HeldValues = value;
+            }
+        }
 
         public Heightmap()
         {
@@ -540,8 +589,9 @@ namespace N8Parser.Level_Modifiers
             myYSize = GetSizeY();
         }
 
-        public Heightmap(int xSize, int ySize)
+        public Heightmap(int xSize, int ySize, HashSet<Point> holds = null)
         {
+            this.HeldValues = holds ?? new HashSet<Point>();
             _map = new List<List<int>>(xSize);
             for (int i = 0; i < xSize; i++)
             {
@@ -554,6 +604,7 @@ namespace N8Parser.Level_Modifiers
             myXSize = GetSizeX();
             myYSize = GetSizeY();
         }
+
 
         public Heightmap(Bitmap input)
         {
@@ -653,7 +704,7 @@ namespace N8Parser.Level_Modifiers
 
                 colors[i] = Color.FromArgb(R, G, B);
             }
-            colors = colors.OrderBy((c) => c.B).ThenBy((c) => c.G).ThenBy((c) => c.R).ToArray();
+            colors = colors.OrderBy((c) => c.R).ThenBy((c) => c.G).ThenBy((c) => c.B).ToArray();
 
             int offset = temp.Item1;
             double scale = temp.Item2;
