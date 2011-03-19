@@ -8,7 +8,7 @@ using System.Windows.Media.Media3D;
 using N8Parser.Geometry;
 using N8Parser.Tronics;
 using System.Drawing;
-
+using N8Parser.Terrain;
 namespace Testing
 {
     class Program
@@ -16,11 +16,19 @@ namespace Testing
         static void Main(string[] args)
         {
 
-            N8Level ShrineHut = MaxProtectTest.GetHutProxies();
-
-            Utilities.MergeWithDefault(ShrineHut);
-
-            Utilities.Save(Utilities.GetDefaultSaveFolder() + "shrine_hut_land.ncd", ShrineHut);
+            Terrain.rand = new Random(0);
+            Terrain.randomVals = new Dictionary<Tuple<int, int, int, int>, double>(10000);
+            List<double> noise = new List<double>(10000);
+            for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < 1000; j++)
+                {
+                    noise.Add(Terrain.PerlinNoise_2D(1, i, j));
+                }
+            }
+            Console.WriteLine("Number of unique random values: " + Terrain.randomVals.Count);
+            Console.WriteLine("Min is: " + noise.Min() + ", max is: " + noise.Max());
+            Console.Read();
         }
         
     }

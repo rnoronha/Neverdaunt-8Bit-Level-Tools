@@ -31,7 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.IterCounter = new System.Windows.Forms.Label();
             this.Materialize = new System.Windows.Forms.Button();
-            this.Run = new System.Windows.Forms.Button();
+            this.HighOrder = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.SeedEntry = new System.Windows.Forms.NumericUpDown();
             this.Stop = new System.Windows.Forms.Button();
@@ -44,15 +44,23 @@
             this.saveHeightmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadN8MapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LandsPerCell = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Y_Current = new System.Windows.Forms.Label();
+            this.X_Current = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.LowOrder = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.SeedEntry)).BeginInit();
             this.FileMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LandsPerCell)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 331);
+            this.label1.Location = new System.Drawing.Point(12, 403);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 0;
@@ -62,7 +70,7 @@
             // 
             this.IterCounter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.IterCounter.AutoSize = true;
-            this.IterCounter.Location = new System.Drawing.Point(66, 331);
+            this.IterCounter.Location = new System.Drawing.Point(66, 403);
             this.IterCounter.Name = "IterCounter";
             this.IterCounter.Size = new System.Drawing.Size(13, 13);
             this.IterCounter.TabIndex = 1;
@@ -72,30 +80,28 @@
             // 
             this.Materialize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Materialize.Enabled = false;
-            this.Materialize.Location = new System.Drawing.Point(15, 352);
+            this.Materialize.Location = new System.Drawing.Point(15, 424);
             this.Materialize.Name = "Materialize";
             this.Materialize.Size = new System.Drawing.Size(75, 23);
             this.Materialize.TabIndex = 2;
             this.Materialize.Text = "Materialize";
             this.Materialize.UseVisualStyleBackColor = true;
-            this.Materialize.Click += new System.EventHandler(this.Materialize_Click);
             // 
-            // Run
+            // HighOrder
             // 
-            this.Run.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Run.Location = new System.Drawing.Point(198, 352);
-            this.Run.Name = "Run";
-            this.Run.Size = new System.Drawing.Size(75, 23);
-            this.Run.TabIndex = 3;
-            this.Run.Text = "Run";
-            this.Run.UseVisualStyleBackColor = true;
-            this.Run.Click += new System.EventHandler(this.Run_Click);
+            this.HighOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.HighOrder.Location = new System.Drawing.Point(405, 424);
+            this.HighOrder.Name = "HighOrder";
+            this.HighOrder.Size = new System.Drawing.Size(75, 23);
+            this.HighOrder.TabIndex = 3;
+            this.HighOrder.Text = "High Order";
+            this.HighOrder.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(157, 334);
+            this.label2.Location = new System.Drawing.Point(319, 377);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 5;
@@ -104,7 +110,7 @@
             // SeedEntry
             // 
             this.SeedEntry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SeedEntry.Location = new System.Drawing.Point(198, 332);
+            this.SeedEntry.Location = new System.Drawing.Point(360, 375);
             this.SeedEntry.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -118,19 +124,18 @@
             // 
             this.Stop.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Stop.Enabled = false;
-            this.Stop.Location = new System.Drawing.Point(106, 352);
+            this.Stop.Location = new System.Drawing.Point(209, 424);
             this.Stop.Name = "Stop";
             this.Stop.Size = new System.Drawing.Size(75, 23);
             this.Stop.TabIndex = 7;
             this.Stop.Text = "Stop";
             this.Stop.UseVisualStyleBackColor = true;
-            this.Stop.Click += new System.EventHandler(this.Stop_Click);
             // 
             // ShowBitmap
             // 
             this.ShowBitmap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ShowBitmap.AutoSize = true;
-            this.ShowBitmap.Location = new System.Drawing.Point(12, 311);
+            this.ShowBitmap.Location = new System.Drawing.Point(12, 383);
             this.ShowBitmap.Name = "ShowBitmap";
             this.ShowBitmap.Size = new System.Drawing.Size(143, 17);
             this.ShowBitmap.TabIndex = 8;
@@ -142,7 +147,7 @@
             this.KeepCurrentSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.KeepCurrentSeed.AutoSize = true;
             this.KeepCurrentSeed.Enabled = false;
-            this.KeepCurrentSeed.Location = new System.Drawing.Point(12, 288);
+            this.KeepCurrentSeed.Location = new System.Drawing.Point(12, 360);
             this.KeepCurrentSeed.Name = "KeepCurrentSeed";
             this.KeepCurrentSeed.Size = new System.Drawing.Size(195, 17);
             this.KeepCurrentSeed.TabIndex = 9;
@@ -151,9 +156,12 @@
             // 
             // TerrainImage
             // 
+            this.TerrainImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TerrainImage.Location = new System.Drawing.Point(12, 33);
             this.TerrainImage.Name = "TerrainImage";
-            this.TerrainImage.Size = new System.Drawing.Size(261, 249);
+            this.TerrainImage.Size = new System.Drawing.Size(468, 310);
             this.TerrainImage.TabIndex = 10;
             this.TerrainImage.TabStop = false;
             // 
@@ -164,7 +172,7 @@
             this.settingsToolStripMenuItem});
             this.FileMenu.Location = new System.Drawing.Point(0, 0);
             this.FileMenu.Name = "FileMenu";
-            this.FileMenu.Size = new System.Drawing.Size(285, 24);
+            this.FileMenu.Size = new System.Drawing.Size(492, 24);
             this.FileMenu.TabIndex = 11;
             // 
             // fileToolStripMenuItem
@@ -181,7 +189,6 @@
             this.loadHeightmapToolStripMenuItem.Name = "loadHeightmapToolStripMenuItem";
             this.loadHeightmapToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.loadHeightmapToolStripMenuItem.Text = "Load heightmap";
-            this.loadHeightmapToolStripMenuItem.Click += new System.EventHandler(this.loadHeightmapToolStripMenuItem_Click);
             // 
             // saveHeightmapToolStripMenuItem
             // 
@@ -189,7 +196,6 @@
             this.saveHeightmapToolStripMenuItem.Name = "saveHeightmapToolStripMenuItem";
             this.saveHeightmapToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.saveHeightmapToolStripMenuItem.Text = "Save heightmap";
-            this.saveHeightmapToolStripMenuItem.Click += new System.EventHandler(this.saveHeightmapToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -202,22 +208,106 @@
             // loadN8MapToolStripMenuItem
             // 
             this.loadN8MapToolStripMenuItem.Name = "loadN8MapToolStripMenuItem";
-            this.loadN8MapToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadN8MapToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.loadN8MapToolStripMenuItem.Text = "Load N8 map";
-            this.loadN8MapToolStripMenuItem.Click += new System.EventHandler(this.loadN8MapToolStripMenuItem_Click);
+            // 
+            // LandsPerCell
+            // 
+            this.LandsPerCell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.LandsPerCell.Location = new System.Drawing.Point(360, 349);
+            this.LandsPerCell.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.LandsPerCell.Name = "LandsPerCell";
+            this.LandsPerCell.Size = new System.Drawing.Size(75, 20);
+            this.LandsPerCell.TabIndex = 12;
+            this.LandsPerCell.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(278, 351);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(76, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Points per cell:";
+            // 
+            // Y_Current
+            // 
+            this.Y_Current.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Y_Current.AutoSize = true;
+            this.Y_Current.Location = new System.Drawing.Point(458, 359);
+            this.Y_Current.Name = "Y_Current";
+            this.Y_Current.Size = new System.Drawing.Size(13, 13);
+            this.Y_Current.TabIndex = 14;
+            this.Y_Current.Text = "0";
+            // 
+            // X_Current
+            // 
+            this.X_Current.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.X_Current.AutoSize = true;
+            this.X_Current.Location = new System.Drawing.Point(458, 346);
+            this.X_Current.Name = "X_Current";
+            this.X_Current.Size = new System.Drawing.Size(13, 13);
+            this.X_Current.TabIndex = 15;
+            this.X_Current.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(441, 359);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(20, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Y: ";
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(441, 346);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(20, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "X: ";
+            // 
+            // LowOrder
+            // 
+            this.LowOrder.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.LowOrder.Location = new System.Drawing.Point(405, 398);
+            this.LowOrder.Name = "LowOrder";
+            this.LowOrder.Size = new System.Drawing.Size(75, 23);
+            this.LowOrder.TabIndex = 18;
+            this.LowOrder.Text = "Low Order Noise";
+            this.LowOrder.UseVisualStyleBackColor = true;
             // 
             // TerrainGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(285, 387);
+            this.ClientSize = new System.Drawing.Size(492, 459);
+            this.Controls.Add(this.LowOrder);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.X_Current);
+            this.Controls.Add(this.Y_Current);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.LandsPerCell);
             this.Controls.Add(this.TerrainImage);
             this.Controls.Add(this.KeepCurrentSeed);
             this.Controls.Add(this.ShowBitmap);
             this.Controls.Add(this.Stop);
             this.Controls.Add(this.SeedEntry);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.Run);
+            this.Controls.Add(this.HighOrder);
             this.Controls.Add(this.Materialize);
             this.Controls.Add(this.IterCounter);
             this.Controls.Add(this.label1);
@@ -227,6 +317,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.SeedEntry)).EndInit();
             this.FileMenu.ResumeLayout(false);
             this.FileMenu.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LandsPerCell)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -237,7 +328,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label IterCounter;
         private System.Windows.Forms.Button Materialize;
-        private System.Windows.Forms.Button Run;
+        private System.Windows.Forms.Button HighOrder;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown SeedEntry;
         private System.Windows.Forms.Button Stop;
@@ -250,6 +341,13 @@
         private System.Windows.Forms.ToolStripMenuItem saveHeightmapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadN8MapToolStripMenuItem;
+        private System.Windows.Forms.NumericUpDown LandsPerCell;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label Y_Current;
+        private System.Windows.Forms.Label X_Current;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button LowOrder;
     }
 }
 

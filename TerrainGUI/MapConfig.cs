@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using N8Parser.Level_Modifiers;
+using N8Parser.Terrain;
 
 namespace TerrainGUI
 {

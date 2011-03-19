@@ -6,6 +6,7 @@ using System.Windows.Media.Media3D;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using N8Parser.Geometry;
+using System.Drawing;
 
 namespace N8Parser
 {
@@ -507,6 +508,8 @@ namespace N8Parser
                 return (T)formatter.Deserialize(ms);
             }
         }
+
+
 
         /// <summary>
         /// Generates a random vector between a and b. Components are always integers.
