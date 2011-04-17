@@ -73,25 +73,23 @@ namespace N8Parser.Level_Modifiers
             DataBlock v = ts.NewDataBlock("V");
             v.data = "v";
 
-            DataBlock XYMin = ts.NewDataBlock("XY Min");
-            XYMin.data = "-2000";
+            DataBlock XYZMin = ts.NewDataBlock("XY Min");
+            XYZMin.data = "-2000";
 
             DataBlock XYZMax = ts.NewDataBlock("XYZ Max");
             XYZMax.data = "2000";
 
-            DataBlock ZMin = ts.NewDataBlock("Z Min");
-            ZMin.data = "-1000";
 
             DataBlock PartialsA = ts.NewDataBlock("Partial Results A");
             DataBlock PartialsB = ts.NewDataBlock("Partial Results B");
 
-            ts.Rand(XYMin.In, XYZMax.In, PartialsA.Out, "X Generator")
+            ts.Rand(XYZMin.In, XYZMax.In, PartialsA.Out, "X Generator")
               .And(v.In, PartialsA.In, PartialsA.Out, "vX concat")
               .And(PartialsA.In, Comma.In, PartialsB.Out, "vX, concat")
-              .Rand(ZMin.In, XYZMax.In, PartialsA.Out, "Z Generator")
+              .Rand(XYZMin.In, XYZMax.In, PartialsA.Out, "Z Generator")
               .And(PartialsB.In, PartialsA.In, PartialsB.Out, "vX,Z concat")
               .And(PartialsB.In, Comma.In, PartialsB.Out, "vX,Z, concat")
-              .Rand(XYMin.In, XYZMax.In, PartialsA.Out, "Y Generator")
+              .Rand(XYZMin.In, XYZMax.In, PartialsA.Out, "Y Generator")
               .And(PartialsB.In, PartialsA.In, PartialsB.Out, "vX,Z,Y concat");
 
             return ts;
@@ -99,7 +97,7 @@ namespace N8Parser.Level_Modifiers
 
         public static TronicSequence RandomXYVectorGenerator()
         {
-            return RandomXYVectorGenerator(-2000, 2000, -1000);
+            return RandomXYVectorGenerator(-2000, 2000, -2000);
         }
 
         public static TronicSequence RandomXYVectorGenerator(int min, int max, int zValue)

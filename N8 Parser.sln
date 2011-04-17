@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelModTools", "LevelModTo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainGUI", "TerrainGUI\TerrainGUI.csproj", "{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationTool", "AnimationTool\AnimationTool.csproj", "{D9357489-9696-4086-9572-41AB7BFC0B65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -37,6 +39,10 @@ Global
 		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Debug|x86.Build.0 = Debug|x86
 		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Release|x86.ActiveCfg = Release|x86
 		{E65F72BF-D074-42A2-BDB0-C4C5CC108C81}.Release|x86.Build.0 = Release|x86
+		{D9357489-9696-4086-9572-41AB7BFC0B65}.Debug|x86.ActiveCfg = Debug|x86
+		{D9357489-9696-4086-9572-41AB7BFC0B65}.Debug|x86.Build.0 = Debug|x86
+		{D9357489-9696-4086-9572-41AB7BFC0B65}.Release|x86.ActiveCfg = Release|x86
+		{D9357489-9696-4086-9572-41AB7BFC0B65}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

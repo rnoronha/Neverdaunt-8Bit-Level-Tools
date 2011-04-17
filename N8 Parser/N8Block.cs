@@ -44,15 +44,15 @@ namespace N8Parser
             type = pieces[1];
             name = pieces[2];
 
-            double[] vector_parts = (from s in pieces[3].Split(',') select double.Parse(s)).ToArray();
-            position = new Vector3D(vector_parts[0], vector_parts[2], vector_parts[1]);
+            position = Utilities.VectorFromN8String(pieces[3]);
 
-            double[] quat_parts = (from s in pieces[4].Split(',') select double.Parse(s)).ToArray();
-            rotation = new Quaternion(quat_parts[1], quat_parts[3], quat_parts[2], quat_parts[0]);
+            rotation = Utilities.RotationFromN8String(pieces[4]);
 
             if(pieces.Length > 5)
                 int.TryParse(pieces[5], out Special);
         }
+
+
 
         public N8Block(int id, string type, string name)
         {

@@ -616,6 +616,26 @@ namespace N8Parser
             return SanitizedData;
         }
 
-        
+        public static Quaternion RotationFromN8String(string entry)
+        {
+            double[] quat_parts = (from s in entry.Split(',') select double.Parse(s)).ToArray();
+            return new Quaternion(quat_parts[1], quat_parts[3], quat_parts[2], quat_parts[0]);
+        }
+
+        public static Vector3D VectorFromN8String(string entry)
+        {
+            double[] vector_parts = (from s in entry.Split(',') select double.Parse(s)).ToArray();
+            return new Vector3D(vector_parts[0], vector_parts[2], vector_parts[1]);
+        }
+
+        public static Vector3D Abs(this Vector3D me)
+        {
+            return new Vector3D(Math.Abs(me.X), Math.Abs(me.Y), Math.Abs(me.Z));
+        }
+
+        public static Quaternion Abs(this Quaternion me)
+        {
+            return new Quaternion(Math.Abs(me.X), Math.Abs(me.Y), Math.Abs(me.Z), Math.Abs(me.W));
+        }
     }
 }

@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animation\AnimationFrame.cs" />
+    <Compile Include="Animation\AnimationSequence.cs" />
     <Compile Include="Geometry\Cylindrical.cs" />
     <Compile Include="Geometry\SphereTessellation.cs" />
     <Compile Include="Level Modifiers\AddMoon.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="Wire.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

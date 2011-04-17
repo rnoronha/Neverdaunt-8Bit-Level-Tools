@@ -16,19 +16,17 @@ namespace Testing
         static void Main(string[] args)
         {
 
-            Terrain.rand = new Random(0);
-            Terrain.randomVals = new Dictionary<Tuple<int, int, int, int>, double>(10000);
-            List<double> noise = new List<double>(10000);
-            for (int i = 0; i < 1000; i++)
+            N8Level moon = new N8Level();
+            List<Tuple<Vector3D, Quaternion>> sphere = Utilities.GenerateSphere(new Vector3D(0, 0, 1000), 1000, 200);
+
+            foreach (var block in sphere)
             {
-                for (int j = 0; j < 1000; j++)
-                {
-                    noise.Add(Terrain.PerlinNoise_2D(1, i, j));
-                }
+                N8Block b = moon.blocks.GenerateBlock("simple.white.land.mega", "moon");
+                b.position = block.Item1;
+                b.rotation = block.Item2;
             }
-            Console.WriteLine("Number of unique random values: " + Terrain.randomVals.Count);
-            Console.WriteLine("Min is: " + noise.Min() + ", max is: " + noise.Max());
-            Console.Read();
+
+            Utilities.Save(Utilities.GetDefaultSaveFolder() + "moon.ncd", moon);
         }
         
     }
